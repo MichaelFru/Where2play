@@ -14,6 +14,9 @@ import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -48,13 +51,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 int id = item.getItemId();
 
                 if (id == R.id.nav_friends) {
-                    // Handle Friends action
-                } else if (id == R.id.nav_search) {
-                    // Handle Map action
+                    replaceFragment(new friends());
+                } else if (id == R.id.nav_home) {
+                    replaceFragment(new HomeFrag());
+                }else if (id == R.id.nav_search) {
+                    replaceFragment(new friends());
                 } else if (id == R.id.nav_challenges) {
-                    // Handle Weekly Challenges action
+                    replaceFragment(new challenges());
                 } else if (id == R.id.nav_settings) {
-                    // Handle Settings action
+                    replaceFragment(new friends());
+                } else if (id == R.id.nav_logout) {
+
                 }
 
 
@@ -62,6 +69,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+    }
+    private void replaceFragment(Fragment toReplace) {
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.replace(R.id.linearLayout, toReplace);
+        transaction.commit();
     }
 
 

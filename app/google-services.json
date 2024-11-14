@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1008207350368",
+    "project_id": "where2play-ac563",
+    "storage_bucket": "where2play-ac563.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1008207350368:android:0f6348fa50592aaadcd105",
+        "android_client_info": {
+          "package_name": "com.example.goplay"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0NsiDAXF3fWoA_jzguUPgnbHp9_ItQVQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
