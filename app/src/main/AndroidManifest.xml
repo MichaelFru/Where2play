@@ -15,41 +15,31 @@
         <activity
             android:name=".BaseActivity"
             android:exported="false" />
-        <activity
-            android:name=".Friends"
-            android:exported="false" />
+
         <activity
             android:name=".friends"
             android:exported="false" />
-        <activity
-            android:name=".MenuNav"
-            android:exported="false"
-            android:label="@string/title_activity_menu_nav"
-            android:theme="@style/Theme.GoPlay.NoActionBar" />
-        <activity
-            android:name=".Menu"
-            android:exported="false" />
+
+
         <activity
             android:name=".SignUp"
             android:exported="false" />
-        <activity
-            android:name=".PlayingZones"
-            android:exported="false" />
-        <activity
-            android:name=".ManagerLogin"
-            android:exported="false" />
+
         <activity
             android:name=".Login"
-            android:exported="false" />
+            android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
+
         <activity
             android:name=".MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="false"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+
     </application>
 
 </manifest>

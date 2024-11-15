@@ -44,7 +44,7 @@
             android:textColorHint="@android:color/holo_blue_bright" />
 
         <Button
-            android:id="@+id/loginButton"
+            android:id="@+id/btnLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -54,7 +54,7 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/signUpButton"
+            android:id="@+id/btnGoToSignUp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
