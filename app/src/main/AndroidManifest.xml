@@ -17,7 +17,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".friends"
+            android:name=".FriendsFrag"
             android:exported="false" />
 
 

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/lavender"
+    android:padding="16dp">
+
+    <!-- Profile Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <!-- Profile Picture with Rounded Background -->
+        <ImageView
+            android:id="@+id/profile_picture"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_profile"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="Profile picture"
+            android:background="@drawable/rounded_background"
+            android:padding="4dp"
+            android:elevation="4dp" />
+
+        <!-- Profile Name Text -->
+        <TextView
+            android:id="@+id/profile_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Your Name"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="sans-serif-medium" />
+    </LinearLayout>
+
+    <!-- Divider for a Smooth Transition -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#D3D3D3"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Settings Options -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:elevation="4dp">
+
+        <!-- Edit Name Button -->
+        <Button
+            android:id="@+id/btn_edit_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Edit Name"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@android:color/holo_blue_bright"
+            android:backgroundTint="@color/semi_transparent"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Change Password Button -->
+        <Button
+            android:id="@+id/btn_change_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Change Password"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@android:color/holo_blue_bright"
+            android:backgroundTint="@color/semi_transparent"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Edit Sports Interests Button -->
+        <Button
+            android:id="@+id/btn_edit_sports_interests"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Edit Sports Interests"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@android:color/holo_blue_bright"
+            android:backgroundTint="@color/semi_transparent"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Sports Settings Button -->
+        <Button
+            android:id="@+id/btn_sports"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sports"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@android:color/holo_blue_bright"
+            android:backgroundTint="@color/semi_transparent" />
+    </LinearLayout>
+</LinearLayout>
