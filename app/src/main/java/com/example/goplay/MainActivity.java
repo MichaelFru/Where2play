@@ -14,6 +14,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.goplay.Views.ChallengesFrag;
+import com.example.goplay.Views.FriendsFrag;
+import com.example.goplay.Views.HomeFrag;
+import com.example.goplay.Views.SettingsFrag;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -61,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 } else if (id == R.id.nav_challenges) {
                     replaceFragment(new ChallengesFrag());
                 } else if (id == R.id.nav_settings) {
-                    replaceFragment(new FriendsFrag());
+                    replaceFragment(new SettingsFrag());
                 } else if (id == R.id.nav_logout) {
                     FBAuthHelper.logout();
                     startActivity(new Intent(MainActivity.this, Login.class));

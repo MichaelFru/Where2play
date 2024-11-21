@@ -1,4 +1,4 @@
-package com.example.goplay;
+package com.example.goplay.Views;
 
 import android.os.Bundle;
 
@@ -8,12 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.goplay.R;
+
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link SettingsFrag#newInstance} factory method to
+ * Use the {@link HomeFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SettingsFrag extends Fragment {
+public class HomeFrag extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,7 +26,7 @@ public class SettingsFrag extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public SettingsFrag() {
+    public HomeFrag() {
         // Required empty public constructor
     }
 
@@ -34,11 +36,11 @@ public class SettingsFrag extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment SettingsFrag.
+     * @return A new instance of fragment HomeFrag.
      */
     // TODO: Rename and change types and number of parameters
-    public static SettingsFrag newInstance(String param1, String param2) {
-        SettingsFrag fragment = new SettingsFrag();
+    public static HomeFrag newInstance(String param1, String param2) {
+        HomeFrag fragment = new HomeFrag();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -59,6 +61,6 @@ public class SettingsFrag extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+        return inflater.inflate(R.layout.fragment_home, container, false);
     }
 }

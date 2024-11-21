@@ -62,7 +62,8 @@
             android:fontFamily="sans-serif-medium"
             android:textColor="@android:color/holo_blue_bright"
             android:backgroundTint="@color/semi_transparent"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="50dp"/>
 
         <!-- Change Password Button -->
         <Button
@@ -74,7 +75,8 @@
             android:fontFamily="sans-serif-medium"
             android:textColor="@android:color/holo_blue_bright"
             android:backgroundTint="@color/semi_transparent"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="50dp"/>
 
         <!-- Edit Sports Interests Button -->
         <Button
@@ -86,17 +88,10 @@
             android:fontFamily="sans-serif-medium"
             android:textColor="@android:color/holo_blue_bright"
             android:backgroundTint="@color/semi_transparent"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="50dp"/>
 
         <!-- Sports Settings Button -->
-        <Button
-            android:id="@+id/btn_sports"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Sports"
-            android:textSize="16sp"
-            android:fontFamily="sans-serif-medium"
-            android:textColor="@android:color/holo_blue_bright"
-            android:backgroundTint="@color/semi_transparent" />
+
     </LinearLayout>
 </LinearLayout>
