@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
 }
 
 android {
@@ -47,8 +48,11 @@ dependencies {
     implementation(libs.navigation.ui)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
+    implementation(libs.play.services.maps)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation(libs.firebase.ui.firestore)
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation ("com.google.android.gms:play-services-maps:18.1.0")
 }

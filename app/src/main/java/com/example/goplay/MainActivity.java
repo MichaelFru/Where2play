@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 } else if (id == R.id.nav_home) {
                     replaceFragment(new HomeFrag());
                 }else if (id == R.id.nav_search) {
-                    replaceFragment(new FriendsFrag());
+                    replaceFragment(new MapsActivity());
                 } else if (id == R.id.nav_challenges) {
                     replaceFragment(new ChallengesFrag());
                 } else if (id == R.id.nav_settings) {
