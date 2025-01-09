@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.goplay.Views.ChallengesFrag;
 import com.example.goplay.Views.FriendsFrag;
 import com.example.goplay.Views.HomeFrag;
+import com.example.goplay.Views.SearchFrag;
 import com.example.goplay.Views.SettingsFrag;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 } else if (id == R.id.nav_home) {
                     replaceFragment(new HomeFrag());
                 }else if (id == R.id.nav_search) {
-                    replaceFragment(new MapsActivity());
+                    replaceFragment(new SearchFrag());
                 } else if (id == R.id.nav_challenges) {
                     replaceFragment(new ChallengesFrag());
                 } else if (id == R.id.nav_settings) {
