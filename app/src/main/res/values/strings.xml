@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">goPlay</string>
+    <string name="app_name">Where2Play</string>
     <string name="title_activity_menu_nav">MenuNav</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

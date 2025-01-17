@@ -30,8 +30,9 @@
             android:hint="Email"
             android:inputType="textEmailAddress"
             android:padding="16dp"
-            android:textColor="@android:color/black"
-            android:textColorHint="@android:color/holo_blue_bright" />
+            android:textColor="@android:color/white"
+            android:background="@drawable/holeblue_roundcorners"
+            android:textColorHint="#cdd2d4" />
         <EditText
             android:id="@+id/nameEditText"
             android:layout_width="match_parent"
@@ -40,27 +41,30 @@
             android:hint="Full name"
             android:inputType="textEmailAddress"
             android:padding="16dp"
-            android:textColor="@android:color/black"
-            android:textColorHint="@android:color/holo_blue_bright" />
+            android:background="@drawable/holeblue_roundcorners"
+            android:textColor="@android:color/white"
+            android:textColorHint="#cdd2d4" />
 
         <EditText
             android:id="@+id/passwordEditText"
             android:layout_width="match_parent"
+            android:background="@drawable/holeblue_roundcorners"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:hint="Password"
             android:padding="16dp"
-            android:textColor="@android:color/black"
-            android:textColorHint="@android:color/holo_blue_bright" />
+            android:textColor="@android:color/white"
+            android:textColorHint="#cdd2d4" />
         <EditText
             android:id="@+id/CpasswordEditText"
             android:layout_width="match_parent"
+            android:background="@drawable/holeblue_roundcorners"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:hint="Confirm Password"
             android:padding="16dp"
-            android:textColor="@android:color/black"
-            android:textColorHint="@android:color/holo_blue_bright" />
+            android:textColor="@android:color/white"
+            android:textColorHint="#cdd2d4" />
         <Button
             android:id="@+id/signUpButton"
             android:layout_width="match_parent"
