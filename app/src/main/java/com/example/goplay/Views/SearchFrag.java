@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.example.goplay.MainActivity;
-import com.example.goplay.MapsActivity26;
 import com.example.goplay.R;
 
 /**
@@ -67,7 +65,7 @@ public class SearchFrag extends Fragment {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         Button btnMap = view.findViewById(R.id.btn_go_to_map);
         btnMap.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), MapsActivity26.class);
+            Intent intent = new Intent(getActivity(), UserMapFragment.class);
             startActivity(intent);
         });
         // Inflate the layout for this fragment

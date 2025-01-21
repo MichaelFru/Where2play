@@ -1,8 +1,10 @@
 package com.example.goplay;
 
+import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -17,8 +19,8 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.goplay.Views.ChallengesFrag;
 import com.example.goplay.Views.FriendsFrag;
 import com.example.goplay.Views.HomeFrag;
-import com.example.goplay.Views.SearchFrag;
 import com.example.goplay.Views.SettingsFrag;
+import com.example.goplay.Views.UserMapFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,7 +31,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ActionBarDrawerToggle toggle;
     private FirebaseAuth mAuth;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +39,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser().getEmail().equals("admin@gmail.com"){
+
+        }
 
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -49,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
 
         replaceFragment(new HomeFrag());
+        if ()
 
 
 
@@ -62,10 +67,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 } else if (id == R.id.nav_home) {
                     replaceFragment(new HomeFrag());
                 }else if (id == R.id.nav_search) {
-                    replaceFragment(new MapsActivity26());
+                    replaceFragment(new UserMapFragment());
                 } else if (id == R.id.nav_challenges) {
                     replaceFragment(new ChallengesFrag());
                 } else if (id == R.id.nav_settings) {
+                    replaceFragment(new SettingsFrag());
+                } else if (id == R.id.nav_addVenue) {
                     replaceFragment(new SettingsFrag());
                 } else if (id == R.id.nav_logout) {
                     FBAuthHelper.logout();

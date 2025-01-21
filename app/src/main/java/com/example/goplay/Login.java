@@ -80,6 +80,9 @@ public class Login extends AppCompatActivity implements FBAuthHelper.FBReply {
 
     @Override
     public void loginSuccess(FirebaseUser user) {
+        if (etEmail.equals("Admin@gmail.com")){
+
+        }
         startActivity(new Intent(this, MainActivity.class));
     }
 }

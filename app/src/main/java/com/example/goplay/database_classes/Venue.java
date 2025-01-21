@@ -2,6 +2,10 @@ package com.example.goplay.database_classes;
 
 import android.media.Image;
 
+//TODO
+//https://github.com/belindaatschool/noteslist
+
+
 public class Venue {
     private int venue_id;
     private String name;

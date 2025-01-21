@@ -2,6 +2,8 @@ package com.example.goplay.database_classes;
 
 public class User {
     private int user_id;
+    private String email;
+    private String password;
     private String name;
     private String sportsIntrest;
     private String location;
@@ -10,11 +12,29 @@ public class User {
     public User() {
     }
 
-    public User(int user_id, String name, String sportsIntrest, String location) {
+    public User(int user_id, String email, String password, String name, String sportsIntrest, String location) {
         this.user_id = user_id;
+        this.email = email;
+        this.password = password;
         this.name = name;
         this.sportsIntrest = sportsIntrest;
         this.location = location;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public int getUser_id() {

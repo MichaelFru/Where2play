@@ -36,7 +36,7 @@
             android:value="AIzaSyCuF1a1-8QZgF5anRlCcoA0ux7GexcPoOQ" />
 
         <activity
-            android:name=".MapsActivity26"
+            android:name=".Views.UserMapFragment"
             android:exported="false"
             android:label="@string/title_activity_maps26" />
         <activity
