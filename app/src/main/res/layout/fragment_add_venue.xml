@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Venue ID (non-editable, displayed for reference) -->
+        <EditText
+            android:id="@+id/et_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Venue id"
+            android:inputType="text"
+            android:padding="8dp"/>
+
+        <!-- Name -->
+        <EditText
+            android:id="@+id/et_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Venue Name"
+            android:inputType="text"
+            android:padding="8dp" />
+
+        <!-- Type -->
+        <EditText
+            android:id="@+id/et_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Type (e.g., Basketball, Soccer)"
+            android:inputType="text"
+            android:padding="8dp" />
+
+        <!-- Latitude -->
+        <EditText
+            android:id="@+id/et_latitude"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Latitude"
+            android:inputType="numberDecimal"
+            android:padding="8dp" />
+
+        <!-- Longitude -->
+        <EditText
+            android:id="@+id/et_longitude"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Longitude"
+            android:inputType="numberDecimal"
+            android:padding="8dp" />
+
+        <!-- Capacity -->
+        <EditText
+            android:id="@+id/et_capacity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Capacity"
+            android:inputType="number"
+            android:padding="8dp" />
+
+
+        <!-- Venue Image -->
+        <ImageView
+            android:id="@+id/iv_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:background="@color/cardview_dark_background"
+            android:layout_marginTop="16dp"
+            android:contentDescription="Venue Image" />
+
+        <!-- Upload Image Button -->
+        <Button
+            android:id="@+id/btn_upload_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Upload Image"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp" />
+
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/btn_submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            android:layout_marginTop="16dp"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+</ScrollView>
