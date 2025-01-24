@@ -1,8 +1,15 @@
 package com.example.goplay.Views;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -10,8 +17,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
+import com.example.goplay.FireVenueHelper;
+import com.example.goplay.ImageUtils;
+import com.example.goplay.MainActivity;
 import com.example.goplay.R;
+import com.example.goplay.database_classes.Venue;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,7 +41,8 @@ public class AddVenueFrag extends Fragment {
     private EditText etVenueLatitude;
     private EditText etVenueLongtitude;
     private EditText etVenueCapacity;
-    private Bitmap bitmapVenueImg;
+    private ImageView ivImage;
+    private FireVenueHelper fireVenueHelper;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -77,20 +90,88 @@ public class AddVenueFrag extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_venue, container, false);
-        btnSubmit = getView().findViewById(R.id.btn_submit);
-        btnUploadImg = getView().findViewById(R.id.btn_upload_image);
+        btnSubmit = view.findViewById(R.id.btn_submit);
+        btnUploadImg = view.findViewById(R.id.btn_upload_image);
+        etVenueId = view.findViewById(R.id.et_id);
+        etVenueName= view.findViewById(R.id.et_name);
+        etVenueType= view.findViewById(R.id.et_type);
+        etVenueLatitude= view.findViewById(R.id.et_latitude);
+        etVenueLongtitude= view.findViewById(R.id.et_longitude);
+        etVenueCapacity= view.findViewById(R.id.et_capacity);
+        ivImage= view.findViewById(R.id.iv_image);
+        fireVenueHelper = new FireVenueHelper(null);
+
+        // Set drawable for ivImage - Placeholder image
+        Drawable drawable1 = ContextCompat.getDrawable(getActivity(), R.drawable.app_logo);
+        Bitmap bitmap1 = ((BitmapDrawable) drawable1).getBitmap();
+        ivImage.setImageBitmap(bitmap1);
+        registerCameraLauncher();
         btnUploadImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                cameraLauncher.launch(null);
             }
         });
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(isValidInput()) {
+                    String VenueId = etVenueId.getText().toString();
+                    String VenueName = etVenueName.getText().toString();
+                    int VenueCapacity = Integer.parseInt(etVenueCapacity.getText().toString());
+                    long VenueLatitude = Long.valueOf(etVenueLatitude.getText().toString());
+                    long VenueLongtitude = Long.valueOf(etVenueLongtitude.getText().toString());
+                    String VenueType = etVenueType.getText().toString();
+                    Bitmap bitmap = ImageUtils.getBitmapFromImageView(ivImage);
+                    saveVenue(VenueId,VenueName,VenueType,VenueLatitude,VenueLongtitude,VenueCapacity, bitmap);
+                }
             }
         });
         return view;
+    }
+
+    private void saveVenue(String id,String name,String type, long latitude,long longtitude, int capacity, Bitmap bitmap) {
+
+            fireVenueHelper.add(new Venue(id, name,type,latitude,longtitude,capacity, ImageUtils.convertBitmapToString(bitmap)));
+    }
+    private boolean isValidInput() {
+        boolean isValid = true;
+        if (etVenueId.getText().toString().isEmpty()) {
+            etVenueId.setError("Please enter a title");
+            isValid = false;
+        }
+        if (etVenueName.getText().toString().isEmpty()) {
+            etVenueName.setError("Please enter some content");
+            isValid = false;
+        }
+        if (etVenueType.getText().toString().isEmpty()) {
+            etVenueType.setError("Please enter some content");
+            isValid = false;
+        }
+        if (etVenueLatitude.getText().toString().isEmpty()) {
+            etVenueLatitude.setError("Please enter some content");
+            isValid = false;
+        }
+        if (etVenueLongtitude.getText().toString().isEmpty()) {
+            etVenueLongtitude.setError("Please enter some content");
+            isValid = false;
+        }
+        if (etVenueCapacity.getText().toString().isEmpty()) {
+            etVenueCapacity.setError("Please enter some content");
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    //get image from camera
+    private ActivityResultLauncher<Void> cameraLauncher;
+    private void registerCameraLauncher(){
+        cameraLauncher = registerForActivityResult(new ActivityResultContracts.TakePicturePreview(),
+                new ActivityResultCallback<Bitmap>(){
+                    @Override
+                    public void onActivityResult(Bitmap bitmap) {
+                        ivImage.setImageBitmap(bitmap);
+                    }
+                });
     }
 }
