@@ -3,6 +3,7 @@ package com.example.goplay.Views;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -43,6 +44,8 @@ public class AddVenueFrag extends Fragment {
     private EditText etVenueCapacity;
     private ImageView ivImage;
     private FireVenueHelper fireVenueHelper;
+    private ActivityResultLauncher<String> galleryLauncher; // Class-level variable for gallery launcher
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -105,11 +108,15 @@ public class AddVenueFrag extends Fragment {
         Drawable drawable1 = ContextCompat.getDrawable(getActivity(), R.drawable.app_logo);
         Bitmap bitmap1 = ((BitmapDrawable) drawable1).getBitmap();
         ivImage.setImageBitmap(bitmap1);
-        registerCameraLauncher();
+
+        // Register gallery launcher
+        registerGalleryLauncher();
+
         btnUploadImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cameraLauncher.launch(null);
+                // Launch gallery to select an image
+                galleryLauncher.launch("image/*");
             }
         });
         btnSubmit.setOnClickListener(new View.OnClickListener() {
@@ -164,13 +171,15 @@ public class AddVenueFrag extends Fragment {
     }
 
     //get image from camera
-    private ActivityResultLauncher<Void> cameraLauncher;
-    private void registerCameraLauncher(){
-        cameraLauncher = registerForActivityResult(new ActivityResultContracts.TakePicturePreview(),
-                new ActivityResultCallback<Bitmap>(){
+    // Register the gallery launcher
+    private void registerGalleryLauncher() {
+        galleryLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(),
+                new ActivityResultCallback<Uri>() {
                     @Override
-                    public void onActivityResult(Bitmap bitmap) {
-                        ivImage.setImageBitmap(bitmap);
+                    public void onActivityResult(Uri uri) {
+                        if (uri != null) {
+                            ivImage.setImageURI(uri); // Set the selected image to the ImageView
+                        }
                     }
                 });
     }
