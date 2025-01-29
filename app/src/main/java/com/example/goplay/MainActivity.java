@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.goplay.Views.AddVenueFrag;
 import com.example.goplay.Views.ChallengesFrag;
+import com.example.goplay.Views.EditVenuesFrag;
 import com.example.goplay.Views.FriendsFrag;
 import com.example.goplay.Views.HomeFrag;
 import com.example.goplay.Views.SettingsFrag;
@@ -52,11 +53,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         replaceFragment(new HomeFrag());
 
         Menu menu = navigationView.getMenu();
-        MenuItem adminItem = menu.findItem(R.id.nav_addVenue); // Replace with the actual ID of your menu item
+        MenuItem adminItem1 = menu.findItem(R.id.nav_addVenue); // Replace with the actual ID of your menu item
+        MenuItem adminItem2 = menu.findItem(R.id.nav_EditVenues); // Replace with the actual ID of your menu item
         if (mAuth.getCurrentUser() != null && mAuth.getCurrentUser().getEmail().equals("admin@gmail.com")){
-            adminItem.setVisible(true); // Show the admin item
+            adminItem1.setVisible(true); // Show the admin item
+            adminItem2.setVisible(true);
         } else {
-            adminItem.setVisible(false); // Hide the admin item
+            adminItem1.setVisible(false); // Hide the admin item
+            adminItem2.setVisible(false);
         }
 
 
@@ -78,6 +82,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     replaceFragment(new SettingsFrag());
                 } else if (id == R.id.nav_addVenue) {
                     replaceFragment(new AddVenueFrag());
+                }else if (id == R.id.nav_EditVenues) {
+                    replaceFragment(new EditVenuesFrag());
                 } else if (id == R.id.nav_logout) {
                     FBAuthHelper.logout();
                     startActivity(new Intent(MainActivity.this, Login.class));
