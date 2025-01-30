@@ -10,6 +10,10 @@ import java.io.ByteArrayOutputStream;
 
 public class ImageUtils {
 
+    public static Bitmap reduceImageSize(ImageView image){
+
+    }
+
     public static Bitmap convertStringToBitmap(String image){
         byte[] byteArray = Base64.decode(image, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);

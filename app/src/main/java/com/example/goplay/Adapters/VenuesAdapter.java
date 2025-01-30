@@ -2,7 +2,6 @@ package com.example.goplay.Adapters;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.goplay.ImageUtils;
 import com.example.goplay.R;
-import com.example.goplay.database_classes.Venue;
+import com.example.goplay.model.Venue;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
@@ -37,15 +36,16 @@ public class VenuesAdapter extends FirestoreRecyclerAdapter<Venue, VenuesAdapter
         if (venue.getImage() != null && !venue.getImage().isEmpty())
             holder.ivImage.setImageBitmap(ImageUtils.convertStringToBitmap(venue.getImage()));
 
-        holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context,)
-        });
+       // holder.itemView.setOnClickListener(v -> {
+       //     Intent intent = new Intent(context,Add)
+       // });
     }
 
     @NonNull
     @Override
     public VenueViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return null;
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.venue_item, parent, false);
+        return new VenueViewHolder(view);
     }
 
     public class VenueViewHolder extends RecyclerView.ViewHolder {
@@ -53,10 +53,6 @@ public class VenuesAdapter extends FirestoreRecyclerAdapter<Venue, VenuesAdapter
         private ImageView ivImage;
 
 
-        public VenueViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.venue_item, parent, false);
-            return new VenueViewHolder(view);
-        }
         public VenueViewHolder(@NonNull View itemView) {
             super(itemView);
             tvId = itemView.findViewById(R.id.tvVenueId);
@@ -69,3 +65,4 @@ public class VenuesAdapter extends FirestoreRecyclerAdapter<Venue, VenuesAdapter
         }
     }
 }
+

@@ -10,10 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.goplay.Adapters.VenuesAdapter;
 import com.example.goplay.FireVenueHelper;
 import com.example.goplay.MainActivity;
 import com.example.goplay.R;
-import com.example.goplay.database_classes.Venue;
+import com.example.goplay.model.Venue;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.Query;
 
@@ -34,7 +35,7 @@ public class EditVenuesFrag extends Fragment {
     private String mParam1;
     private String mParam2;
     private RecyclerView rvVenues;
-    private VenuesAdapter venuesAdapter;
+    private VenuesAdapter adapter;
     public EditVenuesFrag() {
         // Required empty public constructor
     }
@@ -76,12 +77,32 @@ public class EditVenuesFrag extends Fragment {
     return view;
     }
     private void setupRecyclerView() {
-        Query query = FireVenueHelper.getCollectionRef().orderBy("timestamp", Query.Direction.DESCENDING);
+        Query query = FireVenueHelper.getCollectionRef();
+        //Query query = FireVenueHelper.getCollectionRef().orderBy("name", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<Venue> options = new FirestoreRecyclerOptions.Builder<Venue>()
                 .setQuery(query, Venue.class)
                 .build();
         rvVenues.setLayoutManager(new LinearLayoutManager(this.getActivity()));
-        adapter = new NotesAdapter(options, this);
+        adapter = new VenuesAdapter(options, getContext());
         rvVenues.setAdapter(adapter);
+        adapter.startListening();
     }
+    //@Override
+    //protected void onStart() {
+    //    super.onStart();
+    //    adapter.startListening();
+//
+    //}
+//
+    //@Override
+    //protected void onStop() {
+    //    super.onStop();
+    //    adapter.stopListening();
+    //}
+//
+    //@Override
+    //protected void onResume() {
+    //    super.onResume();
+    //    adapter.notifyDataSetChanged();
+    //}
 }

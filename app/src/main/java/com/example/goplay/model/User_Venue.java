@@ -1,4 +1,4 @@
-package com.example.goplay.database_classes;
+package com.example.goplay.model;
 
 public class User_Venue {
     private int id;

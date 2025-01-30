@@ -9,7 +9,6 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -19,12 +18,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.goplay.FireVenueHelper;
 import com.example.goplay.ImageUtils;
-import com.example.goplay.MainActivity;
 import com.example.goplay.R;
-import com.example.goplay.database_classes.Venue;
+import com.example.goplay.model.Venue;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -123,6 +124,7 @@ public class AddVenueFrag extends Fragment {
             @Override
             public void onClick(View v) {
                 if(isValidInput()) {
+                    Toast.makeText(getContext(), "Click", Toast.LENGTH_SHORT).show();
                     String VenueId = etVenueId.getText().toString();
                     String VenueName = etVenueName.getText().toString();
                     int VenueCapacity = Integer.parseInt(etVenueCapacity.getText().toString());
@@ -139,7 +141,17 @@ public class AddVenueFrag extends Fragment {
 
     private void saveVenue(String id,String name,String type, long latitude,long longtitude, int capacity, Bitmap bitmap) {
 
-            fireVenueHelper.add(new Venue(id, name,type,latitude,longtitude,capacity, ImageUtils.convertBitmapToString(bitmap)));
+            fireVenueHelper.add(new Venue(id, name, type, latitude, longtitude, capacity, ImageUtils.convertBitmapToString(bitmap)), new FireVenueHelper.AddVenueCallBack() {
+                @Override
+                public void OnAddSuccess() {
+                    Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();            
+                }
+
+                @Override
+                public void OnAddFailure() {
+                    Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+                }
+            });
     }
     private boolean isValidInput() {
         boolean isValid = true;

@@ -2,7 +2,7 @@ package com.example.goplay;
 
 import android.util.Log;
 
-import com.example.goplay.database_classes.User;
+import com.example.goplay.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;

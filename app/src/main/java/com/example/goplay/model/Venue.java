@@ -1,7 +1,4 @@
-package com.example.goplay.database_classes;
-
-import android.graphics.Bitmap;
-import android.media.Image;
+package com.example.goplay.model;
 
 //TODO
 //https://github.com/belindaatschool/noteslist
