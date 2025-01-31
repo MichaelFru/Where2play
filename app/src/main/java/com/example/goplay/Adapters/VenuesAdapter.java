@@ -2,6 +2,7 @@ package com.example.goplay.Adapters;
 
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,19 +28,19 @@ public class VenuesAdapter extends FirestoreRecyclerAdapter<Venue, VenuesAdapter
 
     @Override
     protected void onBindViewHolder(@NonNull VenueViewHolder holder, int position, @NonNull Venue venue) {
+        Log.d("Adapter", "Binding Venue: " + venue.getName());
+
         holder.tvId.setText(venue.getVenue_id());
         holder.tvName.setText(venue.getName());
         holder.tvType.setText(venue.getType());
         holder.tvCapacity.setText(venue.getCapacity());
-        holder.tvLatitude.setText( Long.toString(venue.getLatitude()));
-        holder.tvLongtitude.setText( Long.toString(venue.getLongtitude()));
+        holder.tvLatitude.setText(Long.toString(venue.getLatitude()));
+        holder.tvLongtitude.setText(Long.toString(venue.getLongtitude()));
+
         if (venue.getImage() != null && !venue.getImage().isEmpty())
             holder.ivImage.setImageBitmap(ImageUtils.convertStringToBitmap(venue.getImage()));
-
-       // holder.itemView.setOnClickListener(v -> {
-       //     Intent intent = new Intent(context,Add)
-       // });
     }
+
 
     @NonNull
     @Override

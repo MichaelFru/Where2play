@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.example.goplay.MainActivity;
 import com.example.goplay.R;
 import com.example.goplay.model.Venue;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 
 /**
@@ -78,31 +80,50 @@ public class EditVenuesFrag extends Fragment {
     }
     private void setupRecyclerView() {
         Query query = FireVenueHelper.getCollectionRef();
-        //Query query = FireVenueHelper.getCollectionRef().orderBy("name", Query.Direction.DESCENDING);
+
+//        query.get().addOnCompleteListener(task -> {
+//            if (task.isSuccessful() && task.getResult() != null) {
+//                if (task.getResult().isEmpty()) {
+//                    Log.e("Firestore", "No venues found!");
+//                } else {
+//                    for (DocumentSnapshot doc : task.getResult()) {
+//                        Log.d("Firestore", "Venue Found: " + doc.getData());
+//                    }
+//                }
+//            } else {
+//                Log.e("Firestore", "Error fetching venues", task.getException());
+//            }
+//        });
+
         FirestoreRecyclerOptions<Venue> options = new FirestoreRecyclerOptions.Builder<Venue>()
                 .setQuery(query, Venue.class)
                 .build();
-        rvVenues.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+
+        rvVenues.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new VenuesAdapter(options, getContext());
         rvVenues.setAdapter(adapter);
         adapter.startListening();
     }
-    //@Override
-    //protected void onStart() {
-    //    super.onStart();
-    //    adapter.startListening();
-//
-    //}
-//
-    //@Override
-    //protected void onStop() {
-    //    super.onStop();
-    //    adapter.stopListening();
-    //}
-//
-    //@Override
-    //protected void onResume() {
-    //    super.onResume();
-    //    adapter.notifyDataSetChanged();
-    //}
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (adapter != null) {
+            adapter.startListening();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (adapter != null) {
+            adapter.stopListening();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
+    }
 }
