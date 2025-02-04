@@ -15,7 +15,8 @@
         android:layout_height="wrap_content"
         android:text="Venue name"
         android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginLeft="10dp"/>
 <LinearLayout
     android:orientation="horizontal"
     android:layout_width="wrap_content"
@@ -28,14 +29,6 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="150dp"
         android:padding="5dp">
-    <TextView
-        android:id="@+id/tvVenueId"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Venue ID"
-        android:layout_marginTop="8dp"
-        android:ellipsize="end"
-        android:maxLines="2" />
 
     <TextView
         android:id="@+id/tvVenueType"

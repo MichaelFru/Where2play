@@ -1,8 +1,15 @@
 package com.example.goplay.Views;
 
+import android.app.AlertDialog;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -81,28 +88,95 @@ public class EditVenuesFrag extends Fragment {
     private void setupRecyclerView() {
         Query query = FireVenueHelper.getCollectionRef();
 
-//        query.get().addOnCompleteListener(task -> {
-//            if (task.isSuccessful() && task.getResult() != null) {
-//                if (task.getResult().isEmpty()) {
-//                    Log.e("Firestore", "No venues found!");
-//                } else {
-//                    for (DocumentSnapshot doc : task.getResult()) {
-//                        Log.d("Firestore", "Venue Found: " + doc.getData());
-//                    }
-//                }
-//            } else {
-//                Log.e("Firestore", "Error fetching venues", task.getException());
-//            }
-//        });
-
         FirestoreRecyclerOptions<Venue> options = new FirestoreRecyclerOptions.Builder<Venue>()
                 .setQuery(query, Venue.class)
                 .build();
 
-        rvVenues.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new VenuesAdapter(options, getContext());
+        adapter = new VenuesAdapter(options, requireContext());
+        rvVenues.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvVenues.setAdapter(adapter);
         adapter.startListening();
+
+        // Swipe-to-delete with background effect
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false; // No moving, just swipe
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                confirmDeletion(position);
+            }
+
+            @Override
+            public void onChildDraw(@NonNull Canvas canvas, @NonNull RecyclerView recyclerView,
+                                    @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY,
+                                    int actionState, boolean isCurrentlyActive) {
+                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+                    View itemView = viewHolder.itemView;
+                    Paint paint = new Paint();
+                    paint.setColor(Color.RED); // Background color for delete action
+
+                    float cornerRadius = 40f; // Adjust this for more or less rounding
+                    float left, right, top, bottom;
+
+                    if (dX > 0) { // Swiping right
+                        left = itemView.getLeft();
+                        right = dX;
+                    } else { // Swiping left
+                        left = itemView.getRight() + dX;
+                        right = itemView.getRight();
+                    }
+                    top = itemView.getTop();
+                    bottom = itemView.getBottom();
+
+                    // Draw rounded rectangle as background
+                    canvas.drawRoundRect(left, top, right, bottom, cornerRadius, cornerRadius, paint);
+
+                    // Draw "DELETE" text
+                    paint.setColor(Color.WHITE);
+                    paint.setTextSize(50);
+                    paint.setTextAlign(Paint.Align.CENTER);
+                    float textX = (left + right) / 2;
+                    float textY = itemView.getTop() + itemView.getHeight() / 2 + 15;
+                    canvas.drawText("DELETE", textX, textY, paint);
+
+                    super.onChildDraw(canvas, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                }
+            }
+        });
+
+        itemTouchHelper.attachToRecyclerView(rvVenues);
+    }
+
+    private void confirmDeletion(int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Delete Venue")
+                .setMessage("Are you sure you want to delete this venue?")
+                .setPositiveButton("Yes", (dialog, which) -> deleteVenue(position))
+                .setNegativeButton("Cancel", (dialog, which) -> {
+                    adapter.notifyItemChanged(position); // Reset swipe action
+                    dialog.dismiss();
+                })
+                .setCancelable(false)
+                .show();
+    }
+
+    private void deleteVenue(int position) {
+        // Get the venue document reference
+        String venueId = adapter.getSnapshots().getSnapshot(position).getId();
+        FireVenueHelper.getCollectionRef().document(venueId)
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Firestore", "Venue deleted successfully");
+                    adapter.notifyItemRemoved(position); // Remove item from RecyclerView
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Error deleting venue", e);
+                    adapter.notifyItemChanged(position); // Restore item if deletion fails
+                });
     }
 
     @Override

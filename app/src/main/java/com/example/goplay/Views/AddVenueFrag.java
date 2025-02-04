@@ -37,7 +37,6 @@ import java.util.ArrayList;
 public class AddVenueFrag extends Fragment {
     private Button btnSubmit;
     private Button btnUploadImg;
-    private EditText etVenueId;
     private EditText etVenueName;
     private EditText etVenueType;
     private EditText etVenueLatitude;
@@ -96,7 +95,6 @@ public class AddVenueFrag extends Fragment {
         View view = inflater.inflate(R.layout.fragment_add_venue, container, false);
         btnSubmit = view.findViewById(R.id.btn_submit);
         btnUploadImg = view.findViewById(R.id.btn_upload_image);
-        etVenueId = view.findViewById(R.id.et_id);
         etVenueName= view.findViewById(R.id.et_name);
         etVenueType= view.findViewById(R.id.et_type);
         etVenueLatitude= view.findViewById(R.id.et_latitude);
@@ -125,23 +123,22 @@ public class AddVenueFrag extends Fragment {
             public void onClick(View v) {
                 if(isValidInput()) {
                     Toast.makeText(getContext(), "Click", Toast.LENGTH_SHORT).show();
-                    String VenueId = etVenueId.getText().toString();
                     String VenueName = etVenueName.getText().toString();
                     int VenueCapacity = Integer.parseInt(etVenueCapacity.getText().toString());
-                    long VenueLatitude = Long.valueOf(etVenueLatitude.getText().toString());
-                    long VenueLongtitude = Long.valueOf(etVenueLongtitude.getText().toString());
+                    double VenueLatitude = Double.valueOf(etVenueLatitude.getText().toString());
+                    double VenueLongtitude = Double.valueOf(etVenueLongtitude.getText().toString());
                     String VenueType = etVenueType.getText().toString();
                     Bitmap bitmap = ImageUtils.getBitmapFromImageView(ivImage);
-                    saveVenue(VenueId,VenueName,VenueType,VenueLatitude,VenueLongtitude,VenueCapacity, bitmap);
+                    saveVenue(VenueName,VenueType,VenueLatitude,VenueLongtitude,VenueCapacity, bitmap);
                 }
             }
         });
         return view;
     }
 
-    private void saveVenue(String id,String name,String type, long latitude,long longtitude, int capacity, Bitmap bitmap) {
+    private void saveVenue(String name,String type, double latitude,double longtitude, int capacity, Bitmap bitmap) {
 
-            fireVenueHelper.add(new Venue(id, name, type, latitude, longtitude, capacity, ImageUtils.convertBitmapToString(bitmap)), new FireVenueHelper.AddVenueCallBack() {
+            fireVenueHelper.add(new Venue( name, type, latitude, longtitude, capacity, ImageUtils.convertBitmapToString(bitmap)), new FireVenueHelper.AddVenueCallBack() {
                 @Override
                 public void OnAddSuccess() {
                     Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();            
@@ -155,10 +152,6 @@ public class AddVenueFrag extends Fragment {
     }
     private boolean isValidInput() {
         boolean isValid = true;
-        if (etVenueId.getText().toString().isEmpty()) {
-            etVenueId.setError("Please enter a title");
-            isValid = false;
-        }
         if (etVenueName.getText().toString().isEmpty()) {
             etVenueName.setError("Please enter some content");
             isValid = false;

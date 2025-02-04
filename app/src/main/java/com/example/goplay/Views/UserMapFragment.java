@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.goplay.R;
+import com.example.goplay.model.Venue;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -24,9 +25,13 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class UserMapFragment extends Fragment implements OnMapReadyCallback {
 
@@ -35,19 +40,21 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
     private Marker currentLocationMarker;
-    private View view;
+    private FirebaseFirestore db;
+    private CollectionReference venuesRef;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.activity_maps26, container, false);
+        View view = inflater.inflate(R.layout.activity_maps26, container, false);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map26);
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
 
-        // Initialize FusedLocationProviderClient
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
+        db = FirebaseFirestore.getInstance();
+        venuesRef = db.collection("venues"); // Adjust collection name if needed
 
         return view;
     }
@@ -64,46 +71,69 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
             ActivityCompat.requestPermissions(requireActivity(),
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
         }
+
+        loadVenuesOnMap();
+    }
+
+    private void loadVenuesOnMap() {
+        venuesRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    Venue venue = document.toObject(Venue.class);
+                    LatLng venueLocation = new LatLng(venue.getLatitude(), venue.getLongtitude());
+
+                    Marker marker = mMap.addMarker(new MarkerOptions()
+                            .position(venueLocation)
+                            .title(venue.getName())
+                            .snippet("Type: " + venue.getType() + "\nCapacity: " + venue.getCapacity())
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                    );
+                    marker.setTag(venue);
+                }
+
+                mMap.setOnMarkerClickListener(marker -> {
+                    Venue clickedVenue = (Venue) marker.getTag();
+                    if (clickedVenue != null) {
+                        Log.d("Venue Clicked", "Name: " + clickedVenue.getName());
+                    }
+                    return false; // Allow default marker behavior
+                });
+
+            } else {
+                Log.e("Firestore", "Failed to fetch venues", task.getException());
+            }
+        });
     }
 
     @SuppressLint("MissingPermission")
     private void setupLiveLocationUpdates() {
-        // Enable My Location layer on the map
         mMap.setMyLocationEnabled(true);
 
-        // Create a LocationRequest
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(5000); // 5 seconds
-        locationRequest.setFastestInterval(2000); // 2 seconds
+        locationRequest.setInterval(5000);
+        locationRequest.setFastestInterval(2000);
 
-        // Define the LocationCallback
         locationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(@NonNull LocationResult locationResult) {
-                if (locationResult == null || locationResult.getLastLocation() == null) {
-                    return;
-                }
-
-                // Get the new location
-                LatLng currentLocation = new LatLng(locationResult.getLastLocation().getLatitude(),
-                        locationResult.getLastLocation().getLongitude());
-
-                // Update the marker or create it if it doesn't exist
-                if (currentLocationMarker == null) {
-                    currentLocationMarker = mMap.addMarker(new MarkerOptions()
-                            .position(currentLocation)
-                            .title("You are here"));
-                } else {
-                    currentLocationMarker.setPosition(currentLocation);
-                }
-
-                // Move the camera to the new location
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 17));
-            }
+          //  @Override
+          //  public void onLocationResult(@NonNull LocationResult locationResult) {
+          //      if (locationResult == null || locationResult.getLastLocation() == null) return;
+//
+          //      LatLng currentLocation = new LatLng(locationResult.getLastLocation().getLatitude(),
+          //              locationResult.getLastLocation().getLongitude());
+//
+          //      if (currentLocationMarker == null) {
+          //          currentLocationMarker = mMap.addMarker(new MarkerOptions()
+          //                  .position(currentLocation)
+          //                  .title("You are here"));
+          //      } else {
+          //          currentLocationMarker.setPosition(currentLocation);
+          //      }
+//
+          //      mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 14));
+          //  }
         };
 
-        // Start location updates
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
     }
 
@@ -122,8 +152,6 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-
-        // Stop location updates when the fragment is destroyed
         if (fusedLocationClient != null && locationCallback != null) {
             fusedLocationClient.removeLocationUpdates(locationCallback);
         }

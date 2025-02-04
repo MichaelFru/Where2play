@@ -5,17 +5,15 @@ package com.example.goplay.model;
 
 
 public class Venue {
-    private String venue_id;
     private String name;
     private String type;
-    private long latitude;
-    private long longtitude;
+    private double latitude;
+    private double longtitude;
     private int capacity;
     private String availabilty_status;
     private String image;
 
-    public Venue(String venue_id, String name, String type, long latitude, long longtitude, int capacity, String image) {
-        this.venue_id = venue_id;
+    public Venue( String name, String type, double latitude, double longtitude, int capacity, String image) {
         this.name = name;
         this.type = type;
         this.latitude = latitude;
@@ -26,14 +24,6 @@ public class Venue {
     }
 
     public Venue() {
-    }
-
-    public String getVenue_id() {
-        return venue_id;
-    }
-
-    public void setVenue_id(String venue_id) {
-        this.venue_id = venue_id;
     }
 
     public String getName() {
@@ -52,19 +42,19 @@ public class Venue {
         this.type = type;
     }
 
-    public long getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(long latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public long getLongtitude() {
+    public double getLongtitude() {
         return longtitude;
     }
 
-    public void setLongtitude(long longtitude) {
+    public void setLongtitude(double longtitude) {
         this.longtitude = longtitude;
     }
 

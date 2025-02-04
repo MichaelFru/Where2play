@@ -30,12 +30,11 @@ public class VenuesAdapter extends FirestoreRecyclerAdapter<Venue, VenuesAdapter
     protected void onBindViewHolder(@NonNull VenueViewHolder holder, int position, @NonNull Venue venue) {
         Log.d("Adapter", "Binding Venue: " + venue.getName());
 
-        holder.tvId.setText(venue.getVenue_id());
         holder.tvName.setText(venue.getName());
-        holder.tvType.setText(venue.getType());
-        holder.tvCapacity.setText(venue.getCapacity());
-        holder.tvLatitude.setText(Long.toString(venue.getLatitude()));
-        holder.tvLongtitude.setText(Long.toString(venue.getLongtitude()));
+        holder.tvType.setText("Venue Type:" + venue.getType());
+        holder.tvCapacity.setText("Venue Capacity:" + venue.getCapacity());
+        holder.tvLatitude.setText("Venue Latitude:" + Double.toString(venue.getLatitude()));
+        holder.tvLongtitude.setText("Venue Longtitude:"+ Double.toString(venue.getLongtitude()));
 
         if (venue.getImage() != null && !venue.getImage().isEmpty())
             holder.ivImage.setImageBitmap(ImageUtils.convertStringToBitmap(venue.getImage()));
@@ -50,13 +49,12 @@ public class VenuesAdapter extends FirestoreRecyclerAdapter<Venue, VenuesAdapter
     }
 
     public class VenueViewHolder extends RecyclerView.ViewHolder {
-        private TextView tvId, tvName, tvType, tvCapacity, tvLatitude,tvLongtitude;
+        private TextView  tvName, tvType, tvCapacity, tvLatitude,tvLongtitude;
         private ImageView ivImage;
 
 
         public VenueViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvId = itemView.findViewById(R.id.tvVenueId);
             tvName = itemView.findViewById(R.id.tvVenueName);
             tvType = itemView.findViewById(R.id.tvVenueType);
             tvCapacity = itemView.findViewById(R.id.tvVenueCapacity);

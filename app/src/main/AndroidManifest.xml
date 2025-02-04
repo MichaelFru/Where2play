@@ -42,13 +42,6 @@
             android:exported="false"
             android:label="@string/title_activity_maps26" />
         <activity
-            android:name=".MapsActivity"
-            android:exported="false"
-            android:label="@string/title_activity_maps" />
-        <activity
-            android:name=".EditUserActivity"
-            android:exported="false" />
-        <activity
             android:name=".Views.FriendsFrag"
             android:exported="false" />
         <activity
