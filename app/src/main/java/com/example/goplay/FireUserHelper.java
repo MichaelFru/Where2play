@@ -1,6 +1,7 @@
 package com.example.goplay;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.goplay.model.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -13,7 +14,7 @@ public class FireUserHelper {
     private static final String TAG = "FireStoreHelper Tag";
     private static FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-    private static CollectionReference collectionRef = db.collection("users").document(currentUser.getUid()).collection("my_users");;
+    private static CollectionReference collectionRef = db.collection("users");
     private FireUserHelper.FBReply fbReply;
 
     public interface FBReply {
@@ -26,16 +27,17 @@ public class FireUserHelper {
     }
 
     public void add(User user) {
-        collectionRef.add(user).addOnSuccessListener(documentReference -> {
-            Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+        collectionRef.document(FBAuthHelper.getCurrentUser().getUid()).set(user).addOnSuccessListener(documentReference -> {
+            Log.d(TAG, "DocumentSnapshot added with ID: " + FBAuthHelper.getCurrentUser().getUid());
         }).addOnFailureListener(e -> {
             Log.w(TAG, "Error adding document", e);
             });
     }
 
     public void update(String id, User user) {
-        collectionRef.document(id).update("name", user.getName(), "sports", user.getSportsIntrest()).addOnSuccessListener(aVoid -> {
+        collectionRef.document(id).update("name", user.getName()).addOnSuccessListener(aVoid -> {
             Log.d(TAG, "DocumentSnapshot updated with ID: " + id);
+
         }).addOnFailureListener(e -> {
             Log.w(TAG, "Error updating document", e);
             });

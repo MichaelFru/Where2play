@@ -167,8 +167,7 @@ public class EditVenuesFrag extends Fragment {
     private void deleteVenue(int position) {
         // Get the venue document reference
         String venueId = adapter.getSnapshots().getSnapshot(position).getId();
-        FireVenueHelper.getCollectionRef().document(venueId)
-                .delete()
+        FireVenueHelper.getCollectionRef().document(venueId).delete()
                 .addOnSuccessListener(aVoid -> {
                     Log.d("Firestore", "Venue deleted successfully");
                     adapter.notifyItemRemoved(position); // Remove item from RecyclerView

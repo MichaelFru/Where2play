@@ -11,13 +11,16 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.goplay.model.User;
 import com.google.firebase.auth.FirebaseUser;
 
 public class SignUp extends AppCompatActivity implements FBAuthHelper.FBReply{
 
     private FBAuthHelper fbAuthHelper;
+    private FireUserHelper fireUserHelper;
     private EditText etEmail;
     private EditText etPwd;
+    private EditText etName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +30,7 @@ public class SignUp extends AppCompatActivity implements FBAuthHelper.FBReply{
 
         etEmail = findViewById(R.id.emailEditText);
         etPwd = findViewById(R.id.passwordEditText);
+        etName = findViewById(R.id.nameEditText);
 
         fbAuthHelper = new FBAuthHelper(this);
         if(fbAuthHelper.getCurrentUser() != null)
@@ -68,6 +72,8 @@ public class SignUp extends AppCompatActivity implements FBAuthHelper.FBReply{
     @Override
     public void createUserSuccess(FirebaseUser user) {
         Toast.makeText(this, "Welcome " + user.getEmail(), Toast.LENGTH_SHORT).show();
+        FireUserHelper fireUserHelper = new FireUserHelper(null);
+        fireUserHelper.add(new User(etName.getText().toString()));
         startActivity(new Intent(this, MainActivity.class));
     }
 

@@ -7,16 +7,32 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.goplay.FBAuthHelper;
+import com.example.goplay.FireUserHelper;
+import com.example.goplay.MainActivity;
 import com.example.goplay.R;
+import com.example.goplay.model.User;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link SettingsFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SettingsFrag extends Fragment {
+public class SettingsFrag extends Fragment implements FireUserHelper.FBReply {
 
+    private TextView textView;
+    private FireUserHelper fireUserHelper;
+    private EditText etName;
+    private EditText etPassword;
+    private EditText etCPassword;
+    private Button btnConfirm;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -61,6 +77,32 @@ public class SettingsFrag extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+        View view =  inflater.inflate(R.layout.fragment_settings, container, false);
+        textView = view.findViewById(R.id.profile_name);
+        fireUserHelper = new FireUserHelper(this);
+        fireUserHelper.getOne(FBAuthHelper.getCurrentUser().getUid());
+        etName = view.findViewById(R.id.nameEditText);
+        btnConfirm = view.findViewById(R.id.updateBtn);
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
+                                          @Override
+                                          public void onClick(View v) {
+                                              fireUserHelper.update(FBAuthHelper.getCurrentUser().getUid(), new User(etName.getText().toString()));
+                                              Toast.makeText(getContext(),"name is updated", Toast.LENGTH_SHORT).show();
+                                          }
+                                      });
+
+
+
+        return view;
+    }
+
+    @Override
+    public void getAllSuccess(ArrayList<User> users) {
+
+    }
+
+    @Override
+    public void getOneSuccess(User user) {
+        textView.setText(user.getName());
     }
 }

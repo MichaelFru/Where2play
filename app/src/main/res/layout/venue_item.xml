@@ -17,53 +17,54 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_marginLeft="10dp"/>
-<LinearLayout
-    android:orientation="horizontal"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@drawable/white_roundcorners"
-    android:padding="10dp">
+
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="150dp"
-        android:padding="5dp">
-
-    <TextView
-        android:id="@+id/tvVenueType"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Venue Type"
-        android:layout_marginTop="8dp"
-        android:textSize="12sp" />
-    <TextView
-        android:id="@+id/tvVenueLatitude"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Venue Latitude"
-        android:layout_marginTop="8dp"
-        android:textSize="12sp" />
-    <TextView
-        android:id="@+id/tvVenueLongtitude"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Venue Longtitude"
-        android:layout_marginTop="8dp"
-        android:textSize="12sp" />
-    <TextView
-        android:id="@+id/tvVenueCapacity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Venue Capacity"
-        android:layout_marginTop="8dp"
-        android:textSize="12sp" />
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/imageView"
+        android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:srcCompat="@tools:sample/avatars" />
-</LinearLayout>
+        android:background="@drawable/white_roundcorners"
+        android:padding="10dp">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="150dp"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/tvVenueType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Venue Type"
+                android:layout_marginTop="8dp"
+                android:textSize="12sp" />
+            <TextView
+                android:id="@+id/tvVenueLatitude"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Venue Latitude"
+                android:layout_marginTop="8dp"
+                android:textSize="12sp" />
+            <TextView
+                android:id="@+id/tvVenueLongtitude"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Venue Longtitude"
+                android:layout_marginTop="8dp"
+                android:textSize="12sp" />
+            <TextView
+                android:id="@+id/tvVenueCapacity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Venue Capacity"
+                android:layout_marginTop="8dp"
+                android:textSize="12sp" />
+            </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:srcCompat="@tools:sample/avatars" />
+    </LinearLayout>
 </LinearLayout>

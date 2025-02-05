@@ -1,5 +1,6 @@
 package com.example.goplay.Views;
 
+
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,15 +8,24 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.example.goplay.FBAuthHelper;
+import com.example.goplay.FireUserHelper;
 import com.example.goplay.R;
+import com.example.goplay.model.User;
+
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link HomeFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFrag extends Fragment {
+public class HomeFrag extends Fragment implements FireUserHelper.FBReply {
+    TextView textView;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -61,6 +71,20 @@ public class HomeFrag extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        View view =  inflater.inflate(R.layout.fragment_home, container, false);
+        textView = view.findViewById(R.id.profile_name);
+        FireUserHelper fireUserHelper = new FireUserHelper(this);
+        fireUserHelper.getOne(FBAuthHelper.getCurrentUser().getUid());
+        return view;
+    }
+
+    @Override
+    public void getAllSuccess(ArrayList<User> users) {
+
+    }
+
+    @Override
+    public void getOneSuccess(User user) {
+        textView.setText(user.getName());
     }
 }
