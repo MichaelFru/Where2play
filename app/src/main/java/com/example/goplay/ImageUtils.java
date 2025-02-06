@@ -1,11 +1,16 @@
 package com.example.goplay;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.util.Base64;
 import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+
 import java.io.ByteArrayOutputStream;
 
 public class ImageUtils {
@@ -35,5 +40,16 @@ public class ImageUtils {
             bitmap = ((BitmapDrawable) drawable).getBitmap();
         }
         return bitmap;
+    }
+    public static void uriToImageView(Context context, Uri uri, ImageView ivPhoto) {
+        try {
+            Glide.with(context)
+                    .load(uri)  // Assuming post.getPostImage() returns the image URL
+            // Optional: error image if loading fails
+            .override(100, 100) // Resize image to 600x600 pixels (adjust this size as necessary)
+            .into(ivPhoto);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

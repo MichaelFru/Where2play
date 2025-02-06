@@ -1,5 +1,7 @@
 package com.example.goplay.Views;
 
+import static com.example.goplay.ImageUtils.uriToImageView;
+
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 
 import com.example.goplay.FireVenueHelper;
 import com.example.goplay.ImageUtils;
+import com.example.goplay.MainActivity;
 import com.example.goplay.R;
 import com.example.goplay.model.Venue;
 
@@ -183,6 +186,7 @@ public class AddVenueFrag extends Fragment {
                     @Override
                     public void onActivityResult(Uri uri) {
                         if (uri != null) {
+                            uriToImageView(getContext(), uri,ivImage);
                             ivImage.setImageURI(uri); // Set the selected image to the ImageView
                         }
                     }
