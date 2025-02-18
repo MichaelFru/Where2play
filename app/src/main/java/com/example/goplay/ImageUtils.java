@@ -6,10 +6,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.provider.ContactsContract;
 import android.util.Base64;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 
@@ -28,7 +30,7 @@ public class ImageUtils {
         if(bitmap == null)
             return "";
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        bitmap.compress(Bitmap.CompressFormat.PNG, 50, byteArrayOutputStream);
         byte[] byteArray = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
@@ -51,5 +53,9 @@ public class ImageUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void stringToImageView(String image, ImageView targetIV){
+        Picasso.get().load(image).into(targetIV);
     }
 }

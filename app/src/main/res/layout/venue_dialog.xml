@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/rounded_corners"
+    android:layout_margin="5dp"
+    android:padding="15dp" >
+
+    <TextView
+        android:id="@+id/tvVenueName_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Venue name"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginLeft="10dp"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/white_roundcorners"
+        android:padding="10dp">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="150dp"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/tvVenueType_dialog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Venue Type"
+                android:layout_marginTop="8dp"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tvVenueCapacity_dialog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Venue Capacity"
+                android:layout_marginTop="8dp"
+                android:textSize="12sp" />
+            <TextView
+                android:id="@+id/tvVenuePlaying_dialog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Venue Capacity"
+                android:layout_marginTop="8dp"
+                android:textSize="12sp" />
+            <Button
+                android:id="@+id/btn_play_dialog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="go Play"
+                android:background="@drawable/rounded_corners"
+                />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/img_dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:srcCompat="@tools:sample/avatars" />
+    </LinearLayout>
+</LinearLayout>

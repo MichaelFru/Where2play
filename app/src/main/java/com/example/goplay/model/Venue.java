@@ -1,6 +1,6 @@
 package com.example.goplay.model;
 
-//TODO
+
 //https://github.com/belindaatschool/noteslist
 
 
@@ -10,7 +10,7 @@ public class Venue {
     private double latitude;
     private double longtitude;
     private int capacity;
-    private String availabilty_status;
+    private int playing;
     private String image;
 
     public Venue( String name, String type, double latitude, double longtitude, int capacity, String image) {
@@ -19,7 +19,7 @@ public class Venue {
         this.latitude = latitude;
         this.longtitude = longtitude;
         this.capacity = capacity;
-        this.availabilty_status = "available";
+        this.playing = 0;
         this.image = image;
     }
 
@@ -66,12 +66,12 @@ public class Venue {
         this.capacity = capacity;
     }
 
-    public String getAvailabilty_status() {
-        return availabilty_status;
+    public int getPlaying() {
+        return playing;
     }
 
-    public void setAvailabilty_status(String availabilty_status) {
-        this.availabilty_status = availabilty_status;
+    public void setPlaying(int playing) {
+        this.playing = playing;
     }
 
     public String getImage() {
