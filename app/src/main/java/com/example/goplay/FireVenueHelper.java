@@ -6,6 +6,7 @@ import com.example.goplay.model.Venue;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class FireVenueHelper {
     public interface FBReply {
         void getAllSuccess(ArrayList<Venue> venues);
         void getOneSuccess(Venue venue);
+
     }
     public interface AddVenueCallBack {
         void OnAddSuccess();
@@ -87,6 +89,15 @@ public class FireVenueHelper {
                 Log.d(TAG, "get failed with ", task.getException());
             }
         });
+    }
+
+    public void incVenuePlayers(String venueId) {
+        collectionRef.document(venueId).update("playing", FieldValue.increment(1));
+    }
+
+
+    public void decVenuePlayers(String venueId){
+        collectionRef.document(venueId).update("playing", FieldValue.increment(-1));
     }
     public static CollectionReference getCollectionRef() {
         return collectionRef;

@@ -4,6 +4,8 @@ package com.example.goplay.model;
 //https://github.com/belindaatschool/noteslist
 
 
+import com.google.firebase.firestore.Exclude;
+
 public class Venue {
     private String name;
     private String type;
@@ -12,8 +14,20 @@ public class Venue {
     private int capacity;
     private int playing;
     private String image;
+    @Exclude
+    private String docId;
 
-    public Venue( String name, String type, double latitude, double longtitude, int capacity, String image) {
+    @Exclude
+    public String getDocId() {
+        return docId;
+    }
+
+    @Exclude
+    public void setDocId(String docId) {
+        this.docId = docId;
+    }
+
+    public Venue(String name, String type, double latitude, double longtitude, int capacity, String image) {
         this.name = name;
         this.type = type;
         this.latitude = latitude;

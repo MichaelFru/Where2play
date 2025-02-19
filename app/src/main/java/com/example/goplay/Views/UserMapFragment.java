@@ -19,6 +19,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.goplay.FireVenueHelper;
 import com.example.goplay.ImageUtils;
 import com.example.goplay.MainActivity;
 import com.example.goplay.R;
@@ -48,6 +49,7 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
     private LocationCallback locationCallback;
     private Marker currentLocationMarker;
     private HashMap<Marker, Venue> venueMarkerMap = new HashMap<>();
+    private FireVenueHelper fireVenueHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,6 +58,7 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
+        fireVenueHelper = new FireVenueHelper(null);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
         return view;
     }
@@ -82,6 +85,8 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
             if (task.isSuccessful() && task.getResult() != null) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     Venue venue = document.toObject(Venue.class);
+                    String docId = document.getId();
+                    venue.setDocId(docId);
                     LatLng location = new LatLng(venue.getLatitude(), venue.getLongtitude());
 
                     Marker marker = mMap.addMarker(new MarkerOptions()
@@ -106,6 +111,7 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
         Dialog dialog = new Dialog(requireContext());
         dialog.setContentView(R.layout.venue_dialog);
 
+        // Find views
         TextView tvName = dialog.findViewById(R.id.tvVenueName_dialog);
         TextView tvType = dialog.findViewById(R.id.tvVenueType_dialog);
         TextView tvCapacity = dialog.findViewById(R.id.tvVenueCapacity_dialog);
@@ -113,24 +119,38 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
         ImageView ivVenueImage = dialog.findViewById(R.id.img_dialog);
         Button btnGoPlay = dialog.findViewById(R.id.btn_play_dialog);
 
+        // Set venue data
         tvName.setText(venue.getName());
         tvType.setText("Type: " + venue.getType());
         tvCapacity.setText("Capacity: " + venue.getCapacity());
         tvPlaying.setText("Playing Now: " + venue.getPlaying());
 
-        // Load image with Picasso
+        // Load Base64 image
         if (venue.getImage() != null && !venue.getImage().isEmpty()) {
-            ImageUtils.stringToImageView(venue.getImage(),ivVenueImage);
+            Bitmap bitmap = ImageUtils.convertStringToBitmap(venue.getImage());
+            if (bitmap != null) {
+                ivVenueImage.setImageBitmap(bitmap);
+            } else {
+                ivVenueImage.setImageResource(R.drawable.placeholder_image); // Default image if decoding fails
+            }
+        } else {
+            ivVenueImage.setImageResource(R.drawable.placeholder_image); // Default image if no image is provided
         }
 
+        // Button action
         btnGoPlay.setOnClickListener(v -> {
-            // Handle "Go Play" button click
-            Toast.makeText(getContext(), "bye", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Going to play!", Toast.LENGTH_SHORT).show();
+            String docId = venue.getDocId();
+            fireVenueHelper.incVenuePlayers(docId);
+
             dialog.dismiss();
         });
 
         dialog.show();
     }
+
+
+
 
     @SuppressLint("MissingPermission")
     private void setupLiveLocationUpdates() {
