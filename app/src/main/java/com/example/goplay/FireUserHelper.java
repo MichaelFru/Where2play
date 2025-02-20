@@ -4,6 +4,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.goplay.model.User;
+import com.example.goplay.model.Venue;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 public class FireUserHelper {
     private static final String TAG = "FireStoreHelper Tag";
     private static FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private static FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+    public static FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     private static CollectionReference collectionRef = db.collection("users");
     private FireUserHelper.FBReply fbReply;
 
@@ -65,7 +66,7 @@ public class FireUserHelper {
         });
 
     }
-    public void getOne(String id) {
+    public static void getOne(String id, FBReply fbReply) {
         collectionRef.document(id).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 com.google.firebase.firestore.DocumentSnapshot document = task.getResult();
@@ -80,6 +81,13 @@ public class FireUserHelper {
                 Log.d(TAG, "get failed with ", task.getException());
             }
         });
+    }
+
+    public void setPlayingVenue(Venue venue,String userId){
+        collectionRef.document(userId).update("currentVenue", venue);
+    }
+    public void removePlayingVenue(String userId){
+        collectionRef.document(userId).update("currentVenue", null);
     }
 
     public static CollectionReference getCollectionRef() {

@@ -1,5 +1,7 @@
 package com.example.goplay.Views;
 
+import static com.example.goplay.FireUserHelper.currentUser;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -19,10 +21,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.goplay.FireUserHelper;
 import com.example.goplay.FireVenueHelper;
 import com.example.goplay.ImageUtils;
 import com.example.goplay.MainActivity;
 import com.example.goplay.R;
+import com.example.goplay.model.User;
 import com.example.goplay.model.Venue;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -39,6 +43,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class UserMapFragment extends Fragment implements OnMapReadyCallback {
@@ -118,13 +124,13 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
         TextView tvPlaying = dialog.findViewById(R.id.tvVenuePlaying_dialog);
         ImageView ivVenueImage = dialog.findViewById(R.id.img_dialog);
         Button btnGoPlay = dialog.findViewById(R.id.btn_play_dialog);
+        Button btnLeave = dialog.findViewById(R.id.btn_leave_dialog);
 
         // Set venue data
         tvName.setText(venue.getName());
         tvType.setText("Type: " + venue.getType());
         tvCapacity.setText("Capacity: " + venue.getCapacity());
         tvPlaying.setText("Playing Now: " + venue.getPlaying());
-
         // Load Base64 image
         if (venue.getImage() != null && !venue.getImage().isEmpty()) {
             Bitmap bitmap = ImageUtils.convertStringToBitmap(venue.getImage());
@@ -137,14 +143,54 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
             ivVenueImage.setImageResource(R.drawable.placeholder_image); // Default image if no image is provided
         }
 
-        // Button action
+
         btnGoPlay.setOnClickListener(v -> {
             Toast.makeText(getContext(), "Going to play!", Toast.LENGTH_SHORT).show();
             String docId = venue.getDocId();
-            fireVenueHelper.incVenuePlayers(docId);
+            FireUserHelper.getOne(currentUser.getUid(), new FireUserHelper.FBReply() {
+                @Override
+                public void getAllSuccess(ArrayList<User> users) {
 
-            dialog.dismiss();
+                }
+
+                @Override
+                public void getOneSuccess(User user) {
+                    if (venue.getPlaying() < venue.getCapacity() &&  user.getCurrentVenue() != null ) { // Ensure venue isn't full
+                        fireVenueHelper.incVenuePlayers(docId);
+                        tvPlaying.setText(venue.getPlaying());
+                        // Toggle button visibility
+                        btnGoPlay.setVisibility(View.GONE);  // Hide "Go Play"
+                        btnLeave.setVisibility(View.VISIBLE); // Show "Leave"
+                    } else {
+                        Toast.makeText(getContext(), "The Venue is Full", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
         });
+
+        btnLeave.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "Leaving venue!", Toast.LENGTH_SHORT).show();
+
+            String docId = venue.getDocId();
+            FireUserHelper.getOne(currentUser.getUid(), new FireUserHelper.FBReply() {
+                @Override
+                public void getAllSuccess(ArrayList<User> users) {
+
+                }
+
+                @Override
+                public void getOneSuccess(User user) {
+                    fireVenueHelper.decVenuePlayers(docId); // Decrease player count
+
+                    // Toggle button visibility back
+                    btnGoPlay.setVisibility(View.VISIBLE);
+                    btnLeave.setVisibility(View.GONE);
+                }
+            });
+
+        });
+
 
         dialog.show();
     }

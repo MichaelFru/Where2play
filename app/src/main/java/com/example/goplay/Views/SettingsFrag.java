@@ -25,7 +25,7 @@ import java.util.ArrayList;
  * Use the {@link SettingsFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SettingsFrag extends Fragment implements FireUserHelper.FBReply {
+public class SettingsFrag extends Fragment  {
 
     private TextView textView;
     private FireUserHelper fireUserHelper;
@@ -79,8 +79,28 @@ public class SettingsFrag extends Fragment implements FireUserHelper.FBReply {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_settings, container, false);
         textView = view.findViewById(R.id.profile_name);
-        fireUserHelper = new FireUserHelper(this);
-        fireUserHelper.getOne(FBAuthHelper.getCurrentUser().getUid());
+        fireUserHelper = new FireUserHelper(new FireUserHelper.FBReply() {
+            @Override
+            public void getAllSuccess(ArrayList<User> users) {
+
+            }
+
+            @Override
+            public void getOneSuccess(User user) {
+
+            }
+        });
+        fireUserHelper.getOne(FBAuthHelper.getCurrentUser().getUid(), new FireUserHelper.FBReply() {
+            @Override
+            public void getAllSuccess(ArrayList<User> users) {
+
+            }
+
+            @Override
+            public void getOneSuccess(User user) {
+                textView.setText(user.getName());
+            }
+        });
         etName = view.findViewById(R.id.nameEditText);
         btnConfirm = view.findViewById(R.id.updateBtn);
         btnConfirm.setOnClickListener(new View.OnClickListener() {
@@ -94,15 +114,5 @@ public class SettingsFrag extends Fragment implements FireUserHelper.FBReply {
 
 
         return view;
-    }
-
-    @Override
-    public void getAllSuccess(ArrayList<User> users) {
-
-    }
-
-    @Override
-    public void getOneSuccess(User user) {
-        textView.setText(user.getName());
     }
 }

@@ -24,7 +24,7 @@ import java.util.ArrayList;
  * Use the {@link HomeFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFrag extends Fragment implements FireUserHelper.FBReply {
+public class HomeFrag extends Fragment  {
     TextView textView;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -73,18 +73,18 @@ public class HomeFrag extends Fragment implements FireUserHelper.FBReply {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_home, container, false);
         textView = view.findViewById(R.id.profile_name);
-        FireUserHelper fireUserHelper = new FireUserHelper(this);
-        fireUserHelper.getOne(FBAuthHelper.getCurrentUser().getUid());
+
+        FireUserHelper.getOne(FBAuthHelper.getCurrentUser().getUid(), new FireUserHelper.FBReply() {
+            @Override
+            public void getAllSuccess(ArrayList<User> users) {
+
+            }
+
+            @Override
+            public void getOneSuccess(User user) {
+                textView.setText(user.getName());
+            }
+        });
         return view;
-    }
-
-    @Override
-    public void getAllSuccess(ArrayList<User> users) {
-
-    }
-
-    @Override
-    public void getOneSuccess(User user) {
-        textView.setText(user.getName());
     }
 }

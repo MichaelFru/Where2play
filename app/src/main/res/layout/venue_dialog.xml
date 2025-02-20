@@ -28,7 +28,7 @@
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="150dp"
+            android:layout_marginRight="10dp"
             android:padding="5dp">
 
             <TextView
@@ -59,8 +59,18 @@
                 android:layout_height="wrap_content"
                 android:text="go Play"
                 android:background="@drawable/rounded_corners"
+                android:visibility="visible"
                 />
         </LinearLayout>
+        <Button
+            android:id="@+id/btn_leave_dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Leave"
+            android:background="@drawable/rounded_corners"
+            android:layout_gravity="bottom"
+            android:layout_marginRight="10dp"
+            android:visibility="invisible"/>
 
         <ImageView
             android:id="@+id/img_dialog"
