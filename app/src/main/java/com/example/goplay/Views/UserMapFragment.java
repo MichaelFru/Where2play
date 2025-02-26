@@ -20,12 +20,14 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import com.example.goplay.FireUserHelper;
 import com.example.goplay.FireVenueHelper;
 import com.example.goplay.ImageUtils;
-import com.example.goplay.MainActivity;
 import com.example.goplay.R;
+import com.example.goplay.controller.NotificationWorker;
 import com.example.goplay.model.User;
 import com.example.goplay.model.Venue;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -40,12 +42,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 public class UserMapFragment extends Fragment implements OnMapReadyCallback {
 
@@ -56,6 +59,9 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
     private Marker currentLocationMarker;
     private HashMap<Marker, Venue> venueMarkerMap = new HashMap<>();
     private FireVenueHelper fireVenueHelper;
+    private TextView tvName, tvType, tvCapacity, tvPlaying;
+    private ImageView ivVenueImage;
+    private Button btnGoPlay, btnLeave;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -81,7 +87,7 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
         }
 
-        loadVenuesFromFirestore(); // Fetch venues from Firestore and add markers
+        loadVenuesFromFirestore();
         mMap.setOnMarkerClickListener(this::onMarkerClick);
     }
 
@@ -91,15 +97,11 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
             if (task.isSuccessful() && task.getResult() != null) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     Venue venue = document.toObject(Venue.class);
-                    String docId = document.getId();
-                    venue.setDocId(docId);
+                    venue.setDocId(document.getId());
                     LatLng location = new LatLng(venue.getLatitude(), venue.getLongtitude());
 
-                    Marker marker = mMap.addMarker(new MarkerOptions()
-                            .position(location)
-                            .title(venue.getName()));
-
-                    venueMarkerMap.put(marker, venue); // Store the venue data for later use
+                    Marker marker = mMap.addMarker(new MarkerOptions().position(location).title(venue.getName()));
+                    venueMarkerMap.put(marker, venue);
                 }
             }
         });
@@ -117,96 +119,90 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
         Dialog dialog = new Dialog(requireContext());
         dialog.setContentView(R.layout.venue_dialog);
 
-        // Find views
-        TextView tvName = dialog.findViewById(R.id.tvVenueName_dialog);
-        TextView tvType = dialog.findViewById(R.id.tvVenueType_dialog);
-        TextView tvCapacity = dialog.findViewById(R.id.tvVenueCapacity_dialog);
-        TextView tvPlaying = dialog.findViewById(R.id.tvVenuePlaying_dialog);
-        ImageView ivVenueImage = dialog.findViewById(R.id.img_dialog);
-        Button btnGoPlay = dialog.findViewById(R.id.btn_play_dialog);
-        Button btnLeave = dialog.findViewById(R.id.btn_leave_dialog);
+        tvName = dialog.findViewById(R.id.tvVenueName_dialog);
+        tvType = dialog.findViewById(R.id.tvVenueType_dialog);
+        tvCapacity = dialog.findViewById(R.id.tvVenueCapacity_dialog);
+        tvPlaying = dialog.findViewById(R.id.tvVenuePlaying_dialog);
+        ivVenueImage = dialog.findViewById(R.id.img_dialog);
+        btnGoPlay = dialog.findViewById(R.id.btn_play_dialog);
+        btnLeave = dialog.findViewById(R.id.btn_leave_dialog);
 
-        // Set venue data
         tvName.setText(venue.getName());
         tvType.setText("Type: " + venue.getType());
         tvCapacity.setText("Capacity: " + venue.getCapacity());
         tvPlaying.setText("Playing Now: " + venue.getPlaying());
-        // Load Base64 image
+
         if (venue.getImage() != null && !venue.getImage().isEmpty()) {
             Bitmap bitmap = ImageUtils.convertStringToBitmap(venue.getImage());
-            if (bitmap != null) {
-                ivVenueImage.setImageBitmap(bitmap);
-            } else {
-                ivVenueImage.setImageResource(R.drawable.placeholder_image); // Default image if decoding fails
-            }
+            ivVenueImage.setImageBitmap(bitmap != null ? bitmap : null);
         } else {
-            ivVenueImage.setImageResource(R.drawable.placeholder_image); // Default image if no image is provided
+            ivVenueImage.setImageResource(R.drawable.placeholder_image);
         }
 
-
         btnGoPlay.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Going to play!", Toast.LENGTH_SHORT).show();
             String docId = venue.getDocId();
             FireUserHelper.getOne(currentUser.getUid(), new FireUserHelper.FBReply() {
                 @Override
-                public void getAllSuccess(ArrayList<User> users) {
-
-                }
+                public void getAllSuccess(ArrayList<User> users) {}
 
                 @Override
                 public void getOneSuccess(User user) {
-                    if (venue.getPlaying() < venue.getCapacity() &&  user.getCurrentVenue() != null ) { // Ensure venue isn't full
+                    if (venue.getPlaying() < venue.getCapacity() && user.getCurrentVenue() == null) {
+                        Toast.makeText(getContext(), "Going to play!", Toast.LENGTH_SHORT).show();
                         fireVenueHelper.incVenuePlayers(docId);
-                        tvPlaying.setText(venue.getPlaying());
-                        // Toggle button visibility
-                        btnGoPlay.setVisibility(View.GONE);  // Hide "Go Play"
-                        btnLeave.setVisibility(View.VISIBLE); // Show "Leave"
+
+                        FirebaseFirestore.getInstance().collection("venues").document(docId).get()
+                                .addOnSuccessListener(documentSnapshot -> updatePlayingCount(documentSnapshot));
+
+                        btnGoPlay.setVisibility(View.GONE);
+                        btnLeave.setVisibility(View.VISIBLE);
+
+                        OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(NotificationWorker.class)
+                                .setInitialDelay(5, TimeUnit.SECONDS)
+                                .build();
+                        WorkManager.getInstance(getContext()).enqueue(workRequest);
                     } else {
                         Toast.makeText(getContext(), "The Venue is Full", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
-
         });
 
         btnLeave.setOnClickListener(v -> {
             Toast.makeText(getContext(), "Leaving venue!", Toast.LENGTH_SHORT).show();
-
             String docId = venue.getDocId();
+
             FireUserHelper.getOne(currentUser.getUid(), new FireUserHelper.FBReply() {
                 @Override
-                public void getAllSuccess(ArrayList<User> users) {
-
-                }
+                public void getAllSuccess(ArrayList<User> users) {}
 
                 @Override
                 public void getOneSuccess(User user) {
-                    fireVenueHelper.decVenuePlayers(docId); // Decrease player count
+                    fireVenueHelper.decVenuePlayers(docId);
 
-                    // Toggle button visibility back
+                    FirebaseFirestore.getInstance().collection("venues").document(docId).get()
+                            .addOnSuccessListener(documentSnapshot -> updatePlayingCount(documentSnapshot));
+
                     btnGoPlay.setVisibility(View.VISIBLE);
                     btnLeave.setVisibility(View.GONE);
                 }
             });
-
         });
-
 
         dialog.show();
     }
 
-
-
+    private void updatePlayingCount(DocumentSnapshot documentSnapshot) {
+        if (documentSnapshot.exists()) {
+            int updatedPlaying = documentSnapshot.getLong("playing").intValue();
+            tvPlaying.setText("Now Playing: " + updatedPlaying);
+        }
+    }
 
     @SuppressLint("MissingPermission")
     private void setupLiveLocationUpdates() {
         mMap.setMyLocationEnabled(true);
-        LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(5000);
-        locationRequest.setFastestInterval(2000);
-
-        locationCallback = new LocationCallback() {
+        fusedLocationClient.requestLocationUpdates(LocationRequest.create(), new LocationCallback() {
             @Override
             public void onLocationResult(@NonNull LocationResult locationResult) {
                 if (locationResult.getLastLocation() != null) {
@@ -214,35 +210,13 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
                             locationResult.getLastLocation().getLongitude());
 
                     if (currentLocationMarker == null) {
-                        currentLocationMarker = mMap.addMarker(new MarkerOptions()
-                                .position(currentLocation)
-                                .title("You are here"));
+                        currentLocationMarker = mMap.addMarker(new MarkerOptions().position(currentLocation).title("You are here"));
                     } else {
                         currentLocationMarker.setPosition(currentLocation);
                     }
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 17));
                 }
             }
-        };
-
-        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                setupLiveLocationUpdates();
-            }
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (fusedLocationClient != null && locationCallback != null) {
-            fusedLocationClient.removeLocationUpdates(locationCallback);
-        }
+        }, null);
     }
 }
