@@ -59,6 +59,7 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
     private Marker currentLocationMarker;
     private HashMap<Marker, Venue> venueMarkerMap = new HashMap<>();
     private FireVenueHelper fireVenueHelper;
+    private FireUserHelper fireUserHelper;
     private TextView tvName, tvType, tvCapacity, tvPlaying;
     private ImageView ivVenueImage;
     private Button btnGoPlay, btnLeave;
@@ -71,6 +72,7 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
             mapFragment.getMapAsync(this);
         }
         fireVenueHelper = new FireVenueHelper(null);
+        fireUserHelper = new FireUserHelper(null);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
         return view;
     }
@@ -150,12 +152,15 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
                     if (venue.getPlaying() < venue.getCapacity() && user.getCurrentVenue() == null) {
                         Toast.makeText(getContext(), "Going to play!", Toast.LENGTH_SHORT).show();
                         fireVenueHelper.incVenuePlayers(docId);
+                        fireUserHelper.setPlayingVenue(venue ,currentUser.getUid() );
 
+                        // updating instantly the playing in the dialog
                         FirebaseFirestore.getInstance().collection("venues").document(docId).get()
                                 .addOnSuccessListener(documentSnapshot -> updatePlayingCount(documentSnapshot));
 
                         btnGoPlay.setVisibility(View.GONE);
                         btnLeave.setVisibility(View.VISIBLE);
+
 
                         OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(NotificationWorker.class)
                                 .setInitialDelay(5, TimeUnit.SECONDS)
@@ -179,6 +184,7 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
                 @Override
                 public void getOneSuccess(User user) {
                     fireVenueHelper.decVenuePlayers(docId);
+                    fireUserHelper.removePlayingVenue(currentUser.getUid());
 
                     FirebaseFirestore.getInstance().collection("venues").document(docId).get()
                             .addOnSuccessListener(documentSnapshot -> updatePlayingCount(documentSnapshot));

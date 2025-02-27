@@ -1,3 +1,5 @@
+package com.example.goplay.controller;
+
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -10,9 +12,10 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
+import com.example.goplay.receiver.NotificationReceiver;
 
 import com.example.goplay.R;
-import
+
 
 
 public class NotificationWorker extends Worker {
@@ -37,24 +40,23 @@ public class NotificationWorker extends Worker {
         createNotificationChannel(context);
 
         // **Intent for "Yes" button**
-        Intent yesIntent = new Intent(context, NotificationActionReceiver.class);
+        Intent yesIntent = new Intent(context, NotificationReceiver.class);
         yesIntent.setAction(ACTION_YES);
         PendingIntent yesPendingIntent = PendingIntent.getBroadcast(context, 0, yesIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         // **Intent for "No" button**
-        Intent noIntent = new Intent(context, NotificationActionReceiver.class);
+        Intent noIntent = new Intent(context, NotificationReceiver.class);
         noIntent.setAction(ACTION_NO);
         PendingIntent noPendingIntent = PendingIntent.getBroadcast(context, 1, noIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         // **Build the notification**
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle("Join the Game?")
-                .setContentText("A game is happening nearby. Do you want to join?")
+                .setSmallIcon(R.drawable.app_logo)
+                .setContentTitle("Are you still playing?")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true)
-                .addAction(R.drawable.ic_yes, "Yes", yesPendingIntent)  // Yes button
-                .addAction(R.drawable.ic_no, "No", noPendingIntent);    // No button
+                .addAction(R.drawable.baseline_yes_24, "Yes", yesPendingIntent)  // Yes button
+                .addAction(R.drawable.baseline_no_24, "No", noPendingIntent);    // No button
 
         NotificationManagerCompat manager = NotificationManagerCompat.from(context);
         manager.notify(NOTIFICATION_ID, builder.build());
