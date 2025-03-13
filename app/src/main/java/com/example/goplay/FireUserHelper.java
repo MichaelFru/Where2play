@@ -3,11 +3,16 @@ package com.example.goplay;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.example.goplay.model.User;
 import com.example.goplay.model.Venue;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 
@@ -67,20 +72,24 @@ public class FireUserHelper {
 
     }
     public static void getOne(String id, FBReply fbReply) {
-        collectionRef.document(id).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                com.google.firebase.firestore.DocumentSnapshot document = task.getResult();
-                if (document.exists()) {
-                    Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                    User user = document.toObject(User.class);
-                    fbReply.getOneSuccess(user);
-                } else {
-                    Log.d(TAG, "No such document");
-                }
-            } else {
-                Log.d(TAG, "get failed with ", task.getException());
-            }
-        });
+        collectionRef.document(id).get().addOnCompleteListener(
+                new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            com.google.firebase.firestore.DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                                User user = document.toObject(User.class);
+                                fbReply.getOneSuccess(user);
+                            } else {
+                                Log.d(TAG, "No such document");
+                            }
+                        } else {
+                            Log.d(TAG, "get failed with ", task.getException());
+                        }
+                    }
+                } );
     }
 
     public void setPlayingVenue(Venue venue,String userId){
@@ -89,6 +98,7 @@ public class FireUserHelper {
     public void removePlayingVenue(String userId){
         collectionRef.document(userId).update("currentVenue", null);
     }
+
 
     public static CollectionReference getCollectionRef() {
         return collectionRef;

@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
+import com.example.goplay.FBAuthHelper;
 import com.example.goplay.FireUserHelper;
 import com.example.goplay.FireVenueHelper;
 import com.example.goplay.ImageUtils;
@@ -140,6 +141,22 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
         } else {
             ivVenueImage.setImageResource(R.drawable.placeholder_image);
         }
+     FireUserHelper.getOne(FBAuthHelper.getCurrentUser().getUid(), new FireUserHelper.FBReply() {
+         @Override
+         public void getAllSuccess(ArrayList<User> users) {
+         }
+
+         @Override
+            public void getOneSuccess(User user) {
+            if (user.getCurrentVenue()!=null && user.getCurrentVenue().getDocId()==venue.getDocId()){
+                btnLeave.setVisibility(View.VISIBLE);
+                btnGoPlay.setVisibility(View.GONE);
+            } else if (user.getCurrentVenue() != null && user.getCurrentVenue().getDocId()!=venue.getDocId()){
+                btnGoPlay.setVisibility(View.GONE);
+                btnLeave.setVisibility(View.GONE);
+                }
+            }
+        });
 
         btnGoPlay.setOnClickListener(v -> {
             String docId = venue.getDocId();
@@ -149,7 +166,7 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
 
                 @Override
                 public void getOneSuccess(User user) {
-                    if (venue.getPlaying() < venue.getCapacity() && user.getCurrentVenue() == null) {
+                    if (venue.getPlaying() < venue.getCapacity() ) {
                         Toast.makeText(getContext(), "Going to play!", Toast.LENGTH_SHORT).show();
                         fireVenueHelper.incVenuePlayers(docId);
                         fireUserHelper.setPlayingVenue(venue ,currentUser.getUid() );

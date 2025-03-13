@@ -64,6 +64,7 @@ public class FireVenueHelper {
                 for (com.google.firebase.firestore.DocumentSnapshot document : task.getResult()) {
                     Log.d(TAG, document.getId() + " => " + document.getData());
                     Venue venue = document.toObject(Venue.class);
+                    venue.setDocId(document.getId());
                     venues.add(venue);
                 }
                 fbReply.getAllSuccess(venues);
