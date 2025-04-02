@@ -14,15 +14,12 @@ public class Venue {
     private int capacity;
     private int playing;
     private String image;
-    @Exclude
     private String docId;
 
-    @Exclude
     public String getDocId() {
         return docId;
     }
 
-    @Exclude
     public void setDocId(String docId) {
         this.docId = docId;
     }

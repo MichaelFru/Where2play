@@ -148,7 +148,7 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
 
          @Override
             public void getOneSuccess(User user) {
-            if (user.getCurrentVenue()!=null && user.getCurrentVenue().getDocId()==venue.getDocId()){
+            if (user.getCurrentVenue()!=null && user.getCurrentVenue().getDocId().equals(venue.getDocId())  ){
                 btnLeave.setVisibility(View.VISIBLE);
                 btnGoPlay.setVisibility(View.GONE);
             } else if (user.getCurrentVenue() != null && user.getCurrentVenue().getDocId()!=venue.getDocId()){
@@ -175,9 +175,9 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
                         FirebaseFirestore.getInstance().collection("venues").document(docId).get()
                                 .addOnSuccessListener(documentSnapshot -> updatePlayingCount(documentSnapshot));
 
+
                         btnGoPlay.setVisibility(View.GONE);
                         btnLeave.setVisibility(View.VISIBLE);
-
 
                         OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(NotificationWorker.class)
                                 .setInitialDelay(5, TimeUnit.SECONDS)
@@ -186,6 +186,7 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
                     } else {
                         Toast.makeText(getContext(), "The Venue is Full", Toast.LENGTH_SHORT).show();
                     }
+                    loadVenuesFromFirestore();
                 }
             });
         });
@@ -205,7 +206,6 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
 
                     FirebaseFirestore.getInstance().collection("venues").document(docId).get()
                             .addOnSuccessListener(documentSnapshot -> updatePlayingCount(documentSnapshot));
-
                     btnGoPlay.setVisibility(View.VISIBLE);
                     btnLeave.setVisibility(View.GONE);
                 }
