@@ -133,7 +133,7 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
         tvName.setText(venue.getName());
         tvType.setText("Type: " + venue.getType());
         tvCapacity.setText("Capacity: " + venue.getCapacity());
-        tvPlaying.setText("Playing Now: " + venue.getPlaying());
+        tvPlaying.setText("Now Playing : " + venue.getPlaying());
 
         if (venue.getImage() != null && !venue.getImage().isEmpty()) {
             Bitmap bitmap = ImageUtils.convertStringToBitmap(venue.getImage());
@@ -173,7 +173,10 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
 
                         // updating instantly the playing in the dialog
                         FirebaseFirestore.getInstance().collection("venues").document(docId).get()
-                                .addOnSuccessListener(documentSnapshot -> updatePlayingCount(documentSnapshot));
+                                .addOnSuccessListener(documentSnapshot -> {
+                                    updatePlayingCount(documentSnapshot);
+                                    loadVenuesFromFirestore();
+                                });
 
 
                         btnGoPlay.setVisibility(View.GONE);
@@ -186,7 +189,7 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
                     } else {
                         Toast.makeText(getContext(), "The Venue is Full", Toast.LENGTH_SHORT).show();
                     }
-                    loadVenuesFromFirestore();
+
                 }
             });
         });
