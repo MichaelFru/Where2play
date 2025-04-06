@@ -6,6 +6,7 @@ import com.example.goplay.model.Venue;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -26,6 +27,9 @@ public class FireVenueHelper {
     public interface AddVenueCallBack {
         void OnAddSuccess();
         void OnAddFailure();
+    }
+    public interface PlayingCountCallback{
+        void onPlayingContSuccess(DocumentSnapshot documentSnapshot);
     }
 
     public FireVenueHelper(FireVenueHelper.FBReply fbReply) {
@@ -92,14 +96,32 @@ public class FireVenueHelper {
         });
     }
 
-    public void incVenuePlayers(String venueId) {
-        collectionRef.document(venueId).update("playing", FieldValue.increment(1));
+    public void incVenuePlayers(String venueId,  PlayingCountCallback playingCountCallback) {
+        collectionRef.document(venueId).update("playing", FieldValue.increment(1))
+         .addOnSuccessListener(aVoid -> {
+            if (playingCountCallback != null) {
+                // Fetch the updated document
+                collectionRef.document(venueId).get()
+                        .addOnSuccessListener(documentSnapshot -> {
+                            playingCountCallback.onPlayingContSuccess(documentSnapshot);
+                        });
+            }
+        });
     }
 
-
-    public void decVenuePlayers(String venueId){
-        collectionRef.document(venueId).update("playing", FieldValue.increment(-1));
+    public void decVenuePlayers(String venueId, PlayingCountCallback playingCountCallback) {
+        collectionRef.document(venueId).update("playing", FieldValue.increment(-1))
+                .addOnSuccessListener(aVoid -> {
+                    if (playingCountCallback != null) {
+                        // Fetch the updated document
+                        collectionRef.document(venueId).get()
+                                .addOnSuccessListener(documentSnapshot -> {
+                                    playingCountCallback.onPlayingContSuccess(documentSnapshot);
+                                });
+                    }
+                });
     }
+
     public static CollectionReference getCollectionRef() {
         return collectionRef;
     }

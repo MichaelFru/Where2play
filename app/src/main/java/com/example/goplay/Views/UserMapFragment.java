@@ -160,69 +160,50 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
 
         btnGoPlay.setOnClickListener(v -> {
             String docId = venue.getDocId();
-            FireUserHelper.getOne(currentUser.getUid(), new FireUserHelper.FBReply() {
-                @Override
-                public void getAllSuccess(ArrayList<User> users) {}
+            if (venue.getPlaying() < venue.getCapacity() ) {
+                Toast.makeText(getContext(), "Going to play!", Toast.LENGTH_SHORT).show();
+                fireVenueHelper.incVenuePlayers(docId, documentSnapshot -> updatePlayingCount(documentSnapshot));
+                fireUserHelper.setPlayingVenue(venue ,currentUser.getUid() );
 
-                @Override
-                public void getOneSuccess(User user) {
-                    if (venue.getPlaying() < venue.getCapacity() ) {
-                        Toast.makeText(getContext(), "Going to play!", Toast.LENGTH_SHORT).show();
-                        fireVenueHelper.incVenuePlayers(docId);
-                        fireUserHelper.setPlayingVenue(venue ,currentUser.getUid() );
+                loadVenuesFromFirestore();
 
-                        // updating instantly the playing in the dialog
-                        FirebaseFirestore.getInstance().collection("venues").document(docId).get()
-                                .addOnSuccessListener(documentSnapshot -> {
-                                    updatePlayingCount(documentSnapshot);
-                                    loadVenuesFromFirestore();
-                                });
+                btnGoPlay.setVisibility(View.GONE);
+                btnLeave.setVisibility(View.VISIBLE);
 
-
-                        btnGoPlay.setVisibility(View.GONE);
-                        btnLeave.setVisibility(View.VISIBLE);
-
-                        OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(NotificationWorker.class)
-                                .setInitialDelay(5, TimeUnit.SECONDS)
-                                .build();
-                        WorkManager.getInstance(getContext()).enqueue(workRequest);
-                    } else {
-                        Toast.makeText(getContext(), "The Venue is Full", Toast.LENGTH_SHORT).show();
-                    }
-
-                }
-            });
+                OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(NotificationWorker.class)
+                        .setInitialDelay(5, TimeUnit.SECONDS)
+                        .build();
+                WorkManager.getInstance(getContext()).enqueue(workRequest);
+            } else {
+                Toast.makeText(getContext(), "The Venue is Full", Toast.LENGTH_SHORT).show();
+            }
         });
 
         btnLeave.setOnClickListener(v -> {
             Toast.makeText(getContext(), "Leaving venue!", Toast.LENGTH_SHORT).show();
             String docId = venue.getDocId();
 
-            FireUserHelper.getOne(currentUser.getUid(), new FireUserHelper.FBReply() {
-                @Override
-                public void getAllSuccess(ArrayList<User> users) {}
+            fireVenueHelper.decVenuePlayers(docId, documentSnapshot -> updatePlayingCount(documentSnapshot));
+            fireUserHelper.removePlayingVenue(currentUser.getUid());
 
-                @Override
-                public void getOneSuccess(User user) {
-                    fireVenueHelper.decVenuePlayers(docId);
-                    fireUserHelper.removePlayingVenue(currentUser.getUid());
-
-                    FirebaseFirestore.getInstance().collection("venues").document(docId).get()
-                            .addOnSuccessListener(documentSnapshot -> updatePlayingCount(documentSnapshot));
-                    btnGoPlay.setVisibility(View.VISIBLE);
-                    btnLeave.setVisibility(View.GONE);
-                }
-            });
+            btnGoPlay.setVisibility(View.VISIBLE);
+            btnLeave.setVisibility(View.GONE);
         });
 
         dialog.show();
     }
 
+
+
     private void updatePlayingCount(DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists()) {
             int updatedPlaying = documentSnapshot.getLong("playing").intValue();
-            tvPlaying.setText("Now Playing: " + updatedPlaying);
+            setNowPlaying(updatedPlaying);
         }
+    }
+
+    public void setNowPlaying(int updatePlaying){
+        tvPlaying.setText("Now Playing: " + updatePlaying);
     }
 
     @SuppressLint("MissingPermission")
