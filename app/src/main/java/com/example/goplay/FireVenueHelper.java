@@ -31,6 +31,10 @@ public class FireVenueHelper {
     public interface PlayingCountCallback{
         void onPlayingContSuccess(DocumentSnapshot documentSnapshot);
     }
+    public interface OnDeleteListener {
+        void onDeleteSuccess();
+        void onDeleteFailure(Exception e);
+    }
 
     public FireVenueHelper(FireVenueHelper.FBReply fbReply) {
         this.fbReply = fbReply;
@@ -54,13 +58,22 @@ public class FireVenueHelper {
         });
     }
 
-    public void delete(String id) {
-        collectionRef.document(id).delete().addOnSuccessListener(aVoid -> {
-            Log.d(TAG, "DocumentSnapshot deleted with ID: " + id);
-        }).addOnFailureListener(e -> {
-            Log.w(TAG, "Error deleting document", e);
-        });
+    public void delete(String id, OnDeleteListener listener) {
+        collectionRef.document(id).delete()
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "DocumentSnapshot deleted with ID: " + id);
+                    if (listener != null) {
+                        listener.onDeleteSuccess();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.w(TAG, "Error deleting document", e);
+                    if (listener != null) {
+                        listener.onDeleteFailure(e);
+                    }
+                });
     }
+
     public void getAll() {
         collectionRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {

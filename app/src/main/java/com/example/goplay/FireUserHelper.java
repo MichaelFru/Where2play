@@ -27,6 +27,10 @@ public class FireUserHelper {
         void getAllSuccess(ArrayList<User> users);
         void getOneSuccess(User user);
     }
+    public interface FBVenueIdCallback {
+        void onVenueIdReceived(String venueId);
+    }
+
 
     public FireUserHelper(FireUserHelper.FBReply fbReply) {
         this.fbReply = fbReply;
@@ -91,6 +95,24 @@ public class FireUserHelper {
                     }
                 } );
     }
+    public static void getCurrentVenueId(FireUserHelper.FBVenueIdCallback callback) {
+        FireUserHelper.getOne(FBAuthHelper.getCurrentUser().getUid(), new FireUserHelper.FBReply() {
+            @Override
+            public void getAllSuccess(ArrayList<User> users) {
+                // לא צריך
+            }
+
+            @Override
+            public void getOneSuccess(User user) {
+                if (user != null && user.getCurrentVenue() != null) {
+                    callback.onVenueIdReceived(user.getCurrentVenue().getDocId());
+                } else {
+                    callback.onVenueIdReceived(null);
+                }
+            }
+        });
+    }
+
 
     public void setPlayingVenue(Venue venue,String userId){
         collectionRef.document(userId).update("currentVenue", venue);

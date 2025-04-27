@@ -10,38 +10,49 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
 import com.example.goplay.FBAuthHelper;
+import com.example.goplay.FireUserHelper;
 import com.example.goplay.FireVenueHelper;
 import com.example.goplay.controller.NotificationWorker;
+import com.example.goplay.FireUserHelper;
 
 import java.util.concurrent.TimeUnit;
 
-
 public class NotificationReceiver extends BroadcastReceiver {
-
-    private FireVenueHelper fireVenueHelper;
-    private Context context;
-
-    public NotificationReceiver(Context context) {
-        this.context=context;
-    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        FireVenueHelper fireVenueHelper = new FireVenueHelper(null);
+        FireUserHelper fireUserHelper = new FireUserHelper(null);
+
         String action = intent.getAction();
-        fireVenueHelper = new FireVenueHelper(null);
         Log.d("NotificationReceiver", "Received action: " + action);
 
-        if ("com.example.goplay.ACTION_YES".equals(action)) {
-            Toast.makeText(context, "Good luck!, another reminder set in an hour", Toast.LENGTH_SHORT).show();
+        if (NotificationWorker.ACTION_YES.equals(action)) {
+            Toast.makeText(context, "Good luck! Another reminder set in an hour", Toast.LENGTH_SHORT).show();
+
             OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(NotificationWorker.class)
                     .setInitialDelay(5, TimeUnit.SECONDS)
                     .build();
             WorkManager.getInstance(context).enqueue(workRequest);
 
-        } else if ("com.example.goplay.ACTION_NO".equals(action)) {
-            Toast.makeText(context, "You clicked NO!", Toast.LENGTH_SHORT).show();
+        } else if (NotificationWorker.ACTION_NO.equals(action)) {
 
-        }
+                Toast.makeText(context, "Leaving venue!", Toast.LENGTH_SHORT).show();
+
+                FireUserHelper.getCurrentVenueId(new FireUserHelper.FBVenueIdCallback() {
+                    @Override
+                    public void onVenueIdReceived(String venueId) {
+                        if (venueId != null) {
+                            fireVenueHelper.decVenuePlayers(venueId, documentSnapshot -> {
+
+                            });
+                            fireUserHelper.removePlayingVenue(FBAuthHelper.getCurrentUser().getUid());
+                        } else {
+                            Log.d("NotificationReceiver", "No current venue found.");
+                        }
+                    }
+                });
+
+            }
     }
-
 }

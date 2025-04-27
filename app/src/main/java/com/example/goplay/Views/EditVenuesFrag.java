@@ -82,6 +82,7 @@ public class EditVenuesFrag extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_edit_venues, container, false);
         rvVenues = view.findViewById(R.id.rvVenues);
+
         setupRecyclerView();
     return view;
     }
@@ -165,17 +166,22 @@ public class EditVenuesFrag extends Fragment {
     }
 
     private void deleteVenue(int position) {
-        // Get the venue document reference
+        FireVenueHelper fireVenueHelper = new FireVenueHelper(null);
         String venueId = adapter.getSnapshots().getSnapshot(position).getId();
-        FireVenueHelper.getCollectionRef().document(venueId).delete()
-                .addOnSuccessListener(aVoid -> {
-                    Log.d("Firestore", "Venue deleted successfully");
-                    adapter.notifyItemRemoved(position); // Remove item from RecyclerView
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("Firestore", "Error deleting venue", e);
-                    adapter.notifyItemChanged(position); // Restore item if deletion fails
-                });
+
+        fireVenueHelper.delete(venueId, new FireVenueHelper.OnDeleteListener() {
+            @Override
+            public void onDeleteSuccess() {
+                Log.d("Firestore", "Venue deleted successfully");
+                adapter.notifyItemRemoved(position); // לעדכן UI אחרי הצלחה
+            }
+
+            @Override
+            public void onDeleteFailure(Exception e) {
+                Log.e("Firestore", "Error deleting venue", e);
+                adapter.notifyItemChanged(position); // לשחזר UI במקרה של כישלון
+            }
+        });
     }
 
     @Override

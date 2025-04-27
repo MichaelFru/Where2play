@@ -55,20 +55,6 @@ public class ImageUtils {
         }
     }
 
-    public static void stringToImageView(String image, ImageView targetIV) {
-        if (image == null || image.isEmpty()) {
-            targetIV.setImageResource(R.drawable.error_image); // Set a default image
-            return;
-        }
 
-        try {
-            byte[] decodedBytes = Base64.decode(image, Base64.DEFAULT);
-            Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-            targetIV.setImageBitmap(decodedBitmap);
-        } catch (Exception e) {
-            e.printStackTrace();
-            targetIV.setImageResource(R.drawable.error_image); // Set error image if decoding fails
-        }
-    }
 
 }
