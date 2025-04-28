@@ -7,6 +7,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -170,10 +171,17 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
                 btnGoPlay.setVisibility(View.GONE);
                 btnLeave.setVisibility(View.VISIBLE);
 
-                OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(NotificationWorker.class)
-                        .setInitialDelay(5, TimeUnit.SECONDS)
-                        .build();
-                WorkManager.getInstance(getContext()).enqueue(workRequest);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                        enqueueNotificationWorker();
+                    } else {
+                        requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1002);
+                    }
+                } else {
+                    // No need to ask for permission on Android < 13
+                    enqueueNotificationWorker();
+                }
+
             } else {
                 Toast.makeText(getContext(), "The Venue is Full", Toast.LENGTH_SHORT).show();
             }
@@ -194,6 +202,12 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
+    private void enqueueNotificationWorker() {
+        OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(NotificationWorker.class)
+                .setInitialDelay(5, TimeUnit.SECONDS)
+                .build();
+        WorkManager.getInstance(requireContext()).enqueue(workRequest);
+    }
 
     private void updatePlayingCount(DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists()) {
@@ -205,6 +219,21 @@ public class UserMapFragment extends Fragment implements OnMapReadyCallback {
     public void setNowPlaying(int updatePlaying){
         tvPlaying.setText("Now Playing: " + updatePlaying);
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 1002) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // User accepted
+                enqueueNotificationWorker();
+            } else {
+                // User denied
+                Toast.makeText(requireContext(), "Cannot send notifications without permission", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
 
     @SuppressLint("MissingPermission")
     private void setupLiveLocationUpdates() {

@@ -20,7 +20,8 @@ public class Login extends AppCompatActivity implements FBAuthHelper.FBReply {
     private FBAuthHelper fbAuthHelper;
     private EditText etEmail;
     private EditText etPwd;
-
+    private boolean isValidPass;
+    private boolean isValidGmail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,12 +30,12 @@ public class Login extends AppCompatActivity implements FBAuthHelper.FBReply {
         etEmail = findViewById(R.id.emailEditText);
         etPwd = findViewById(R.id.passwordEditText);
 
+
         fbAuthHelper = new FBAuthHelper(this);
         if(fbAuthHelper.getCurrentUser() != null)
             startActivity(new Intent(this, MainActivity.class));
         findViewById(R.id.btnLogin).setOnClickListener(v -> {
-            if(     checkEmailValidity(etEmail.getText().toString()) &&
-                    checkPasswordValidity(etPwd.getText().toString()) )
+            if(  checkValidity(etPwd.getText().toString(),etEmail.getText().toString()))
 
                 fbAuthHelper.login(
                         etEmail.getText().toString(),
@@ -51,27 +52,28 @@ public class Login extends AppCompatActivity implements FBAuthHelper.FBReply {
             }
         });
     }
-    private boolean checkPasswordValidity(String password) {
+    private boolean checkValidity(String password,String email) {
+
         if (password.length() >= 6) {
             // Password is valid
-            return true;
+            isValidPass = true;
         } else {
             // Password is invalid, show an error message
             etPwd.setError("Password must be at least 6 characters long");
-            return false;
+            isValidPass = false;
         }
-    }
-
-    private boolean checkEmailValidity(String email) {
         if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             // Email is valid
-            return true;
+            isValidGmail = true;
         } else {
             // Email is invalid, show an error message
             etEmail.setError("Invalid email address");
-            return false;
+            isValidGmail = false;
         }
+        return isValidGmail;
+
     }
+
 
     @Override
     public void createUserSuccess(FirebaseUser user) {

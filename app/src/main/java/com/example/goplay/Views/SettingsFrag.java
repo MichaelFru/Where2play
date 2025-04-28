@@ -30,8 +30,6 @@ public class SettingsFrag extends Fragment  {
     private TextView textView;
     private FireUserHelper fireUserHelper;
     private EditText etName;
-    private EditText etPassword;
-    private EditText etCPassword;
     private Button btnConfirm;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

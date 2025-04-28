@@ -74,26 +74,7 @@
             android:textColor="@android:color/white"
             android:textColorHint="#cdd2d4" />
 
-        <EditText
-            android:id="@+id/passwordEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:hint="Password"
-            android:padding="16dp"
-            android:background="@drawable/holeblue_roundcorners"
-            android:textColor="@android:color/white"
-            android:textColorHint="#cdd2d4"/>
-        <EditText
-            android:id="@+id/CpasswordEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:hint="Confirm Password"
-            android:padding="16dp"
-            android:background="@drawable/holeblue_roundcorners"
-            android:textColor="@android:color/white"
-            android:textColorHint="#cdd2d4" />
+
         <Button
             android:id="@+id/updateBtn"
             android:layout_width="wrap_content"

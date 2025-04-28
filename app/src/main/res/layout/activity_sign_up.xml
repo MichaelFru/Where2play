@@ -51,6 +51,7 @@
             android:background="@drawable/holeblue_roundcorners"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:inputType="textPassword"
             android:hint="Password"
             android:padding="16dp"
             android:textColor="@android:color/white"
@@ -62,6 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:hint="Confirm Password"
+            android:inputType="textPassword"
             android:padding="16dp"
             android:textColor="@android:color/white"
             android:textColorHint="#cdd2d4" />
